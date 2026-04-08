@@ -7,7 +7,7 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'SHEMA - Strengthening Humanity through Empowerment, Mentorship, and Advocacy',
+  title: 'Shema Humanitarian Services',
   description: 'SHEMA Humanitarian Services empowers vulnerable communities through skills training, mentorship, and practical support. Join us as a partner or sponsor.',
   generator: 'v0.app',
   icons: {
