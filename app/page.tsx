@@ -82,7 +82,7 @@ export default function Home() {
       id: 'trauma-recovery',
       title: 'Trauma Recovery',
       shortDescription: 'Counseling, mentorship, and restorative discipleship for healing and recovery',
-      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-rcCgTV0gwRW1rbww8I7AD54ufOjF73.png',
+      image: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001117099.webp',
     },
     {
       id: 'practical-support',
@@ -100,7 +100,7 @@ export default function Home() {
       id: 'community-building',
       title: 'Community Building',
       shortDescription: 'Education, workshops, seminars, and social engagement programs',
-      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-rcCgTV0gwRW1rbww8I7AD54ufOjF73.png',
+      image: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/kulka%20community.png',
     },
   ];
 
@@ -321,7 +321,7 @@ export default function Home() {
                 <div className="w-full max-w-sm">
                   <div className="relative rounded-3xl overflow-hidden shadow-xl">
                     <img
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-rcCgTV0gwRW1rbww8I7AD54ufOjF73.png"
+                      src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/founder.jpeg"
                       alt="Nuhu John Ndavagi - SHEMA Founder"
                       className="w-full h-auto object-cover"
                     />
@@ -528,7 +528,8 @@ export default function Home() {
             <div>
               <h3 className="text-xl font-bold text-secondary mb-6">Contact Information</h3>
               
-              <div className="space-y-8">
+            <div className="space-y-8">
+                {/* 
                 <div>
                   <h4 className="font-bold text-secondary mb-2">Executive Director</h4>
                   <p className="text-foreground/80">Roland Jacob</p>
@@ -542,6 +543,7 @@ export default function Home() {
                   <p className="text-primary font-semibold">+234 9029 615 664</p>
                   <p className="text-foreground/70">Maiduguri, Borno State, Nigeria</p>
                 </div>
+              */}
 
                 <div>
                   <h4 className="font-bold text-secondary mb-2">Communication Officer</h4>
