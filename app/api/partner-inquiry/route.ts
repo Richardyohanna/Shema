@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     // 📩 Send email
     const data = await resend.emails.send({
       from: 'Shema <onboarding@resend.dev>', // change later
-      to: ['yohanrichard091@gmail.com'], 
+      to: ['shemahumatarianservice@gmail.com'], 
       subject: `New Partnership Inquiry from ${name}`,
       html: `
         <h2>New Partnership Inquiry</h2>
