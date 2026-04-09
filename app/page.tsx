@@ -344,11 +344,11 @@ export default function Home() {
               {/* Founder Image - Left Side */}
               <div className="flex justify-center lg:justify-start">
                 <div className="w-full max-w-sm">
-                  <div className="relative rounded-3xl overflow-hidden shadow-xl">
+                  <div className="relative rounded-3xl overflow-hidden shadow-xl w-full h-full">
                     <img
                       src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/nuhu.jpg" //https://pltuxx4q1i7colum.public.blob.vercel-storage.com/founder.jpeg"
                       alt="Nuhu John Ndavagi - SHEMA Founder"
-                      className="w-full h-auto object-cover scale-x-[-1]"
+                      className="w-auto h-auto scale-x-[-1] "
                     />
                   </div>
                 </div>
@@ -423,7 +423,7 @@ export default function Home() {
             </div>
 
             {/* Emmanuel Amos */}
-            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+           {/*} <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
               <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Emmanuel%20Amos-JfSyDBjrrRiAoJ66m4Ta2gSyaS6ZZ5.jpeg"
@@ -435,10 +435,10 @@ export default function Home() {
                 <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Emmanuel Amos</h3>
                 <p className="text-primary font-semibold text-sm sm:text-base">Head of Program</p>
               </div>
-            </div>
+            </div> */}
 
             {/* Alex Wulsog */}
-            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+           {/*} <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
               <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Alex%20Wuslong-gh54rAPzWm8dNBioD3bMsyonm33jOB.jpeg"
@@ -450,7 +450,7 @@ export default function Home() {
                 <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Alex Wulsog</h3>
                 <p className="text-primary font-semibold text-sm sm:text-base">Head of Operation</p>
               </div>
-            </div>
+            </div> */}
 
             {/* Yakubu Joshua - No Photo */}
             <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
@@ -483,7 +483,7 @@ export default function Home() {
             </div>
 
             {/* Nuhu Ashonya Ajiga */}
-            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+           {/* <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
               <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Nuhu%20Ashonya%20Ajiga-0Boo8IM9hLTIqyWneiut38fclt19Uz.jpeg"
@@ -495,10 +495,10 @@ export default function Home() {
                 <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Amb Nuhu Ashonya Ajiga</h3>
                 <p className="text-primary font-semibold text-sm sm:text-base">Partnership & Resources</p>
               </div>
-            </div>
+            </div> */}
 
             {/* Terry M. Pam */}
-            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+          {/*  <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
               <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Terrisom%20M.%20Pam-7v4yuIN8qe4iPih5oSvI84Dq04Sklg.jpeg"
@@ -510,10 +510,10 @@ export default function Home() {
                 <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Terry M. Pam</h3>
                 <p className="text-primary font-semibold text-sm sm:text-base">National Coordinator</p>
               </div>
-            </div>
+            </div> */}
 
              {/* Alpha Ishaya Balami*/}
-            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+            {/* <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
               <div className="h-80 sm:h-96 bg-white overflow-hidden relative">
                 <img
                   src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/Alpha.jpg"
@@ -525,7 +525,7 @@ export default function Home() {
                 <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Alpha Ishaya Balami</h3>
                 <p className="text-primary font-semibold text-sm sm:text-base">Health Director</p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
