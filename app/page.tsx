@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Menu, X, ChevronRight, Heart, Users, BookOpen, Lightbulb } from 'lucide-react';
+import { Menu, X, ChevronRight, Heart, Users, BookOpen, Lightbulb, ChevronUp } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import {
   Select,
@@ -19,6 +19,7 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [partnerModalOpen, setPartnerModalOpen] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
 
   const [formData, setFormData] = useState({
@@ -30,6 +31,19 @@ export default function Home() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -82,19 +96,19 @@ export default function Home() {
       id: 'trauma-recovery',
       title: 'Trauma Recovery',
       shortDescription: 'Counseling, mentorship, and restorative discipleship for healing and recovery',
-      image: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001117099.webp',
+      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1001069628.jpg-8cYMLLBTQKctxoncjb3a6MnAcFQxvK.jpeg',
     },
     {
       id: 'practical-support',
       title: 'Practical Support',
       shortDescription: 'Food, shelter, and essential resources for the most vulnerable',
-      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3-e46ilDNlN2NWjaVwqBZo0M3gA1oy1k.png',
+      image: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001117122.jpg.jpeg',//'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3-e46ilDNlN2NWjaVwqBZo0M3gA1oy1k.png',
     },
     {
       id: 'financial-support',
       title: 'Financial Support',
       shortDescription: 'Grants, scholarships, and economic empowerment initiatives',
-      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1-GQ85XJH7PZy0G6uPqlhXCvDT8Qo0i3.png',
+      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3-e46ilDNlN2NWjaVwqBZo0M3gA1oy1k.png', //'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1-GQ85XJH7PZy0G6uPqlhXCvDT8Qo0i3.png',
     },
     {
       id: 'community-building',
@@ -129,6 +143,13 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  const scrollToHero = () => {
+  const heroSection = document.getElementById('hero');
+    if (heroSection) {
+      heroSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -147,6 +168,7 @@ export default function Home() {
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
               <Link href="#about" className="text-foreground hover:text-primary transition">About</Link>
+              <Link href="#team" className="text-foreground hover:text-primary transition">Team</Link>
               <Link href="#services" className="text-foreground hover:text-primary transition">Services</Link>
               <Link href="#partnership" className="text-foreground hover:text-primary transition">Partnership</Link>
               <Link href="#contact" className="text-foreground hover:text-primary transition">Contact</Link>
@@ -169,6 +191,7 @@ export default function Home() {
           {mobileMenuOpen && (
             <div className="md:hidden pb-4 flex flex-col gap-3">
               <Link href="#about" className="text-foreground hover:text-primary">About</Link>
+              <Link href="#team" className="text-foreground hover:text-primary transition">Team</Link>
               <Link href="#services" className="text-foreground hover:text-primary">Services</Link>
               <Link href="#partnership" className="text-foreground hover:text-primary">Partnership</Link>
               <Link href="#contact" className="text-foreground hover:text-primary">Contact</Link>
@@ -181,7 +204,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section - Carousel */}
-      <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+      <section id="hero" className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
         {/* Carousel Slides */}
         {heroSlides.map((slide, index) => (
           <div
@@ -268,7 +291,9 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-secondary mb-4">About SHEMA</h2>
             <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-              A registered non-profit organization committed to transforming lives with compassion, integrity, and purpose
+              SHEMA is a non-governmental organization founded on the principle that every human being deserves care, opportunity, and dignity  regardless of race, faith, or background. Our name is an acronym for Strengthening Humanity through Empowerment, Mentorship, and Advocacy, and it defines everything we do.
+              <br/>
+              we operate with a singular focus: to equip vulnerable groups including  widows, orphans, and marginalized communities  by providing skills acquisition, knowledge, and support they need to thrive and lead with dignity.
             </p>
           </div>
 
@@ -289,15 +314,15 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="flex gap-3">
                   <span className="text-primary font-bold text-lg">WHO</span>
-                  <p className="text-foreground/80">Empower vulnerable, widowed, orphaned, and marginalized communities</p>
+                  <p className="text-foreground/80">SHEMA — Strengthening Humanity through Empowerment, Mentorship, and Advocacy</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-primary font-bold text-lg">WHAT</span>
-                  <p className="text-foreground/80">Skills training, knowledge sharing, mentorship, and practical support</p>
+                  <p className="text-foreground/80">Empowers lives of vulnerable, widowed, orphaned, and marginalized communities</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-primary font-bold text-lg">HOW</span>
-                  <p className="text-foreground/80">Through evidence-based programs and community-centered approaches</p>
+                  <p className="text-foreground/80">Through skills training, knowledge sharing, mentorship, and practical support</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-primary font-bold text-lg">OUTCOME</span>
@@ -321,9 +346,9 @@ export default function Home() {
                 <div className="w-full max-w-sm">
                   <div className="relative rounded-3xl overflow-hidden shadow-xl">
                     <img
-                      src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/founder.jpeg"
+                      src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/nuhu.jpg" //https://pltuxx4q1i7colum.public.blob.vercel-storage.com/founder.jpeg"
                       alt="Nuhu John Ndavagi - SHEMA Founder"
-                      className="w-full h-auto object-cover"
+                      className="w-full h-auto object-cover scale-x-[-1]"
                     />
                   </div>
                 </div>
@@ -336,7 +361,7 @@ export default function Home() {
                 </h2>
                 
                 <p className="text-foreground/80 text-lg leading-relaxed mb-8">
-                  We started with a simple belief — that small acts of service can transform lives. Today, we&apos;re demonstrating that when we come together, even the smallest steps can lead to meaningful change for our communities.
+                  We started with a simple belief — that small act of service can transform lives. Today, we&apos;re demonstrating that when we come together, even the smallest steps can lead to meaningful change for our communities.
                 </p>
 
                 <div>
@@ -349,6 +374,156 @@ export default function Home() {
                     </Button>
                   </Link>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Meet Our Team Section */}
+      <section id="team" className="-mt-25 py-16 sm:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <p className="text-foreground/60 font-semibold text-xs uppercase tracking-widest mb-4">Our Leadership</p>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-secondary mb-6 leading-tight">Meet Our Team</h2>
+            <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
+              Dedicated professionals with diverse expertise and a shared commitment to transforming lives and creating lasting impact in vulnerable communities across Nigeria
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {/* Roland Jacob */}
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
+                <img
+                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/Roland.jpg" //https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Roland%20Jacob-sd6rfiovKzaGDclK0kEobruATM3Otw.jpeg"
+                  alt="Roland Jacob"
+                  className="w-full h-full object-cover object-[center_40%] group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
+                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Roland Jacob</h3>
+                <p className="text-primary font-semibold text-sm sm:text-base">Executive Director</p>
+              </div>
+            </div>
+
+            {/* Precious Hosea */}
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
+                <img
+                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/Precious.jpg" //https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Precios%20Hosea-ZtFyY7Vq5237AHyPWJxc683m8WPFsz.jpeg"
+                  alt="Precious Hosea"
+                  className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
+                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Precious Hosea</h3>
+                <p className="text-primary font-semibold text-sm sm:text-base">Executive Secretary</p>
+              </div>
+            </div>
+
+            {/* Emmanuel Amos */}
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
+                <img
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Emmanuel%20Amos-JfSyDBjrrRiAoJ66m4Ta2gSyaS6ZZ5.jpeg"
+                  alt="Emmanuel Amos"
+                  className="w-full h-full object-cover object-[center_10%] group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
+                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Emmanuel Amos</h3>
+                <p className="text-primary font-semibold text-sm sm:text-base">Head of Program</p>
+              </div>
+            </div>
+
+            {/* Alex Wulsog */}
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
+                <img
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Alex%20Wuslong-gh54rAPzWm8dNBioD3bMsyonm33jOB.jpeg"
+                  alt="Alex Wulsog"
+                  className="w-full h-full-45 object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
+                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Alex Wulsog</h3>
+                <p className="text-primary font-semibold text-sm sm:text-base">Head of Operation</p>
+              </div>
+            </div>
+
+            {/* Yakubu Joshua - No Photo */}
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="h-80 sm:h-96 bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center relative">
+                <div className="text-center">
+                  <div className="text-7xl sm:text-8xl mb-3 opacity-40">🔒</div>
+                  <p className="text-foreground/60 text-sm font-medium">Profile kept confidential</p>
+                  <p className="text-foreground/50 text-xs mt-1">for security purposes</p>
+                </div>
+              </div>
+              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
+                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Yakubu Joshua</h3>
+                <p className="text-primary font-semibold text-sm sm:text-base">Head of Finance</p>
+              </div>
+            </div>
+
+            {/* Ishaya Chingplan Happiness */}
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
+                <img
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Happiness%20Ishaya-pkA4a67zoqzxMtExxq3DZPYBSuovMD.jpeg"
+                  alt="Ishaya Chingplang Happiness"
+                  className="w-full h-full object-cover object-[center_5%] group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
+                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Ishaya Chingplang Happiness</h3>
+                <p className="text-primary font-semibold text-sm sm:text-base">Communication Officer</p>
+              </div>
+            </div>
+
+            {/* Nuhu Ashonya Ajiga */}
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
+                <img
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Nuhu%20Ashonya%20Ajiga-0Boo8IM9hLTIqyWneiut38fclt19Uz.jpeg"
+                  alt="Amb Nuhu Ashonya Ajiga"
+                  className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
+                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Amb Nuhu Ashonya Ajiga</h3>
+                <p className="text-primary font-semibold text-sm sm:text-base">Partnership & Resources</p>
+              </div>
+            </div>
+
+            {/* Terry M. Pam */}
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
+                <img
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Terrisom%20M.%20Pam-7v4yuIN8qe4iPih5oSvI84Dq04Sklg.jpeg"
+                  alt="Terry M. Pam"
+                  className="w-full h-full-20 object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
+                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Terry M. Pam</h3>
+                <p className="text-primary font-semibold text-sm sm:text-base">National Coordinator</p>
+              </div>
+            </div>
+
+             {/* Alpha Ishaya Balami*/}
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+              <div className="h-80 sm:h-96 bg-white overflow-hidden relative">
+                <img
+                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/Alpha.jpg"
+                  alt="Alpha Ishaya Balami"
+                  className=" w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
+                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Alpha Ishaya Balami</h3>
+                <p className="text-primary font-semibold text-sm sm:text-base">Health Director</p>
               </div>
             </div>
           </div>
@@ -549,6 +724,13 @@ export default function Home() {
                   <h4 className="font-bold text-secondary mb-2">Communication Officer</h4>
                   <p className="text-foreground/80">Happiness Ishaya Chingplang</p>
                   <p className="text-primary font-semibold">+234 8169 306 560</p>
+                  <ul>
+                    <li>
+                      <a href="https://web.facebook.com/profile.php?id=61578723781841" className="hover:text-white transition"><img src="/facebookBlack.png" alt="Facebook" className="h-10 w-10 inline-block mr-5 filter grayscale hover:grayscale-10 transition" /></a>
+                      <a href="https://www.youtube.com/@shemahumanitarianservice?fbclid=IwY2xjawREUlZleHRuA2FlbQIxMABicmlkETFQRmpqN0lSV3JtYktSb3N1c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhpHvKEdi8SyimrCS_otogqCFusJ5_eKXBzY-aNHbK24S2QlHl9WrwW2s0O5_aem_SjkeKZT8CEi9IltxpxWLeQ" className="hover:text-white transition"><img src="/youtubeBlack.png" alt="Twitter" className="h-10 w-10 inline-block mr-5" /></a>
+                      <a href="https://www.instagram.com/shemahumanitarianservice?fbclid=IwY2xjawREUfpleHRuA2FlbQIxMABicmlkETFQRmpqN0lSV3JtYktSb3N1c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhpHvKEdi8SyimrCS_otogqCFusJ5_eKXBzY-aNHbK24S2QlHl9WrwW2s0O5_aem_SjkeKZT8CEi9IltxpxWLeQ" className="hover:text-white transition"><img src="/instagramBlack.png" alt="Instagram" className="h-10 w-10 inline-block mr-5" /></a>
+                    </li> 
+                  </ul>
                 </div>
               </div>
             </div>
@@ -673,6 +855,11 @@ export default function Home() {
                 <li><a href="mailto:shemahumanitarianservices@gmail.com" className="hover:text-white transition">Email</a></li>
                 <li><a href="tel:+2349033072314" className="hover:text-white transition">+234 9033 072 314</a></li>
                 <li>Maiduguri, Borno State, Nigeria</li>
+                <li>
+                  <a href="https://web.facebook.com/profile.php?id=61578723781841" className="hover:text-white transition"><img src="/facebook.png" alt="Facebook" className="h-5 w-5 inline-block mr-5" /></a>
+                  <a href="https://www.youtube.com/@shemahumanitarianservice?fbclid=IwY2xjawREUlZleHRuA2FlbQIxMABicmlkETFQRmpqN0lSV3JtYktSb3N1c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhpHvKEdi8SyimrCS_otogqCFusJ5_eKXBzY-aNHbK24S2QlHl9WrwW2s0O5_aem_SjkeKZT8CEi9IltxpxWLeQ" className="hover:text-white transition"><img src="/youtube.png" alt="Twitter" className="h-5 w-5 inline-block mr-5" /></a>
+                  <a href="https://www.instagram.com/shemahumanitarianservice?fbclid=IwY2xjawREUfpleHRuA2FlbQIxMABicmlkETFQRmpqN0lSV3JtYktSb3N1c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhpHvKEdi8SyimrCS_otogqCFusJ5_eKXBzY-aNHbK24S2QlHl9WrwW2s0O5_aem_SjkeKZT8CEi9IltxpxWLeQ" className="hover:text-white transition"><img src="/instagram.png" alt="Instagram" className="h-5 w-5 inline-block mr-5" /></a>
+                </li> 
               </ul>
             </div>
 
@@ -693,6 +880,16 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {showScrollTop && (
+        <button
+          onClick={scrollToHero}
+          aria-label="Scroll to top"
+          className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition hover:scale-105 hover:bg-primary/90"
+        >
+          <ChevronUp size={22} />
+        </button>
+      )}
 
       {/* Partner Modal */}
       <PartnerModal open={partnerModalOpen} onOpenChange={setPartnerModalOpen} />

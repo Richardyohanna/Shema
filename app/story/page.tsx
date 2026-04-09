@@ -41,6 +41,54 @@ export default function StoryPage() {
     {
       src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069481.jpg.jpeg',
       alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069486.jpg.jpeg',
+      alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069487.jpg.jpeg',
+      alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069492.jpg.jpeg',
+      alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069497.jpg.jpeg',
+      alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069503.jpg.jpeg',
+      alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069505.jpg.jpeg',
+      alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069506.jpg.jpeg',
+      alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069532.jpg.jpeg',
+      alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069547.jpg.jpeg',
+      alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069587.jpg.jpeg',
+      alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069588.jpg.jpeg',
+      alt: 'SHEMA community transformation',
+    },
+    {
+      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069594.jpg.jpeg',
+      alt: 'SHEMA community transformation',
     }
   ];
 
@@ -288,10 +336,10 @@ export default function StoryPage() {
           <h2 className="text-3xl font-bold mb-12 text-center">Our Impact by Numbers</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { number: '10,000+', label: 'Lives Touched' },
-              { number: '500+', label: 'Communities Served' },
-              { number: '150+', label: 'Programs Delivered' },
-              { number: '8+', label: 'Years of Service' },
+              { number: '100+', label: 'Lives Touched' },
+              { number: '1+', label: 'Communities Served' },
+              { number: '3+', label: 'Programs Delivered' },
+              { number: '2+', label: 'Years of Service' },
             ].map((stat, idx) => (
               <div key={idx} className="text-center">
                 <div className="text-4xl sm:text-5xl font-bold mb-2">{stat.number}</div>
