@@ -396,12 +396,12 @@ export default function Home() {
          {/*Founder */}
           
            <div className="flex justify-center items-center -mt-10 mb-15">
-            {/* Roland Jacob */}
+            {/* Nuhu */}
             <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 max-w-sm w-full">
               
               <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
-                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/nuhu.jpg"
+                  src="//https://pltuxx4q1i7colum.public.blob.vercel-storage.com/founder.jpeg" //https://pltuxx4q1i7colum.public.blob.vercel-storage.com/nuhu.jpg"
                   alt="Nuhu John Ndavagi - SHEMA Founder"
                   className="w-full h-full object-cover object-[center_40%] group-hover:scale-105 transition-transform duration-500"
                 />
