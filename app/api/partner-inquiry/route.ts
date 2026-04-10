@@ -37,7 +37,9 @@ export async function POST(request: NextRequest) {
     const data = await resend.emails.send({
       from: 'Shema <info@shemahumantarianservice.org>', // change later
       to: ['shemahumanitarianservices@gmail.com'], 
+      
       subject: `New Partnership Inquiry from ${name}`,
+      replyTo: email,
       html: `
         <h2>New Partnership Inquiry</h2>
         <p><strong>Name:</strong> ${name}</p>
@@ -55,6 +57,7 @@ export async function POST(request: NextRequest) {
       from: 'Shema <info@shemahumantarianservice.org>',
       to: [email],
       subject: 'We received your inquiry',
+      replyTo: `shemahumanitarianservices@gmail.com`,
       html: `
         <p>Hi ${name},</p>
         <p>Thank you for reaching out to Shema Humanitarian.</p>
