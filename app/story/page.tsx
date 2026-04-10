@@ -199,13 +199,13 @@ export default function StoryPage() {
               </h2>
               <div className="space-y-4 text-foreground/80">
                 <p>
-                  SHEMA was founded by <strong>Nuhu John Ndavagi</strong>, a visionary humanitarian based in Maiduguri, Borno State, Nigeria. With a National Diploma in Mechanical Engineering and a Bachelor of Arts in Theology, Nuhu brings a unique perspective that combines practical engineering solutions with deep spiritual conviction.
+                  SHEMA was established by a passionate team of humanitarian-minded individuals based in Maiduguri, Borno State, Nigeria. United by diverse backgrounds in fields such as engineering, education, and theology, the team brings together practical expertise and deep compassion to serve vulnerable communities.
                 </p>
                 <p>
-                  Driven by a conviction that lasting change requires both mentorship and practical action, Nuhu established SHEMA as a vehicle for dignified, inclusive community transformation. He recognized that vulnerable communities—widows, orphans, and marginalized populations—deserve more than charity; they deserve to be empowered and restored to dignity.
+                  Driven by a shared conviction that lasting change requires both mentorship and practical action, the SHEMA team created this platform as a vehicle for dignified and inclusive community transformation. They believe that widows, orphans, and marginalized populations deserve more than temporary aid—they deserve empowerment, restoration, and the opportunity to thrive.
                 </p>
                 <p>
-                  What started as a local initiative has grown into a movement of compassion and hope, touching thousands of lives across Nigeria.
+                  What began as a small, community-driven initiative has grown into a movement of compassion and hope, impacting thousands of lives across Nigeria through collective effort, dedication, and unwavering commitment.
                 </p>
               </div>
             </div>

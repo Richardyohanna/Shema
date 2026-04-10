@@ -340,24 +340,24 @@ export default function Home() {
             </p>
 
             {/* Main Founder Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="items-center">
               {/* Founder Image - Left Side */}
-              <div className="flex justify-center lg:justify-start">
+             {/* <div className="flex justify-center lg:justify-start">
                 <div className="w-full max-w-sm">
-                  <div className="relative rounded-3xl overflow-hidden shadow-xl w-full h-full">
+                  <div className="relative rounded-3xl overflow-hidden shadow-xl w-full h-[410px]">
                     <img
                       src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/nuhu.jpg" //https://pltuxx4q1i7colum.public.blob.vercel-storage.com/founder.jpeg"
                       alt="Nuhu John Ndavagi - SHEMA Founder"
-                      className="w-auto h-auto scale-x-[-1] "
+                      className="w-auto h-auto object-cover scale-x-[-1] "
                     />
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Founder Message - Right Side */}
               <div>
                 <h2 className="text-3xl sm:text-4xl font-bold text-secondary mb-6 leading-tight">
-                  A message from our Founder
+                  Message
                 </h2>
                 
                 <p className="text-foreground/80 text-lg leading-relaxed mb-8">
@@ -365,9 +365,11 @@ export default function Home() {
                 </p>
 
                 <div>
-                  <h3 className="text-2xl font-bold text-secondary">Nuhu John Ndavagi</h3>
-                  <p className="text-primary font-semibold text-lg mb-6">Founder, SHEMA Humanitarian</p>
+                 {/* } <h3 className="text-2xl font-bold text-secondary">Nuhu John Ndavagi</h3>
+                  <p className="text-primary font-semibold text-lg mb-6">Founder, SHEMA Humanitarian</p> 
                   
+                  */}
+
                   <Link href="/story">
                     <Button className="bg-secondary hover:bg-secondary/90 text-white font-semibold py-6 px-8 text-base">
                       Read Our Story
@@ -390,6 +392,29 @@ export default function Home() {
               Dedicated professionals with diverse expertise and a shared commitment to transforming lives and creating lasting impact in vulnerable communities across Nigeria
             </p>
           </div>
+         
+         {/*Founder */}
+          
+           <div className="flex justify-center items-center -mt-10 mb-15">
+            {/* Roland Jacob */}
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 max-w-sm w-full">
+              
+              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
+                <img
+                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/nuhu.jpg"
+                  alt="Nuhu John Ndavagi - SHEMA Founder"
+                  className="w-full h-full object-cover object-[center_40%] group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+
+              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
+                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Nuhu John Ndavagi</h3>
+                <p className="text-primary font-semibold text-sm sm:text-base">Founder</p>
+              </div>
+
+            </div>
+          </div>
+         
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {/* Roland Jacob */}
