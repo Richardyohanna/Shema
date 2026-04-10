@@ -1,5 +1,6 @@
 
 # 🌍 Shema Humanitarian Service Platform
+https://www.shemahumantarianservice.org
 
 > Empowering communities through technology, partnerships, and advocacy.
 
@@ -21,10 +22,7 @@
 * Email Notification
 * Mobile View
 
-```md
-![Homepage](./screenshots/home.png)
-![Form](./screenshots/form.png)
-```
+
 
 ---
 
