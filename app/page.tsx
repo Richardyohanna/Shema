@@ -409,7 +409,7 @@ export default function Home() {
 
               <div className="p-6 sm:p-8 text-center border-t border-gray-100">
                 <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Nuhu John Ndavagi</h3>
-                <p className="text-primary font-semibold text-sm sm:text-base">Founder</p>
+                <p className="text-primary font-semibold text-sm sm:text-base">Chief Executive Officer</p>
               </div>
 
             </div>
@@ -877,8 +877,8 @@ export default function Home() {
             <div>
               <h4 className="font-bold mb-4">Contact</h4>
               <ul className="space-y-2 text-sm text-white/70">
-                <li><a href="mailto:shemahumanitarianservices@gmail.com" className="hover:text-white transition">Email</a></li>
-                <li><a href="tel:+2349033072314" className="hover:text-white transition">+234 9033 072 314</a></li>
+                <li><a href="mailto:shemahumanitarianservices@gmail.com" className="hover:text-white transition">Email: shemahumanitarianservices@gmail.com</a></li>
+                <li><a href="tel:+2349033072314" className="hover:text-white transition">+234 8169 306 560</a></li>
                 <li>Maiduguri, Borno State, Nigeria</li>
                 <li>
                   <a href="https://web.facebook.com/profile.php?id=61578723781841" className="hover:text-white transition"><img src="/facebook.png" alt="Facebook" className="h-5 w-5 inline-block mr-5" /></a>
