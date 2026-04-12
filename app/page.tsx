@@ -496,7 +496,7 @@ export default function Home() {
             <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
               <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Happiness%20Ishaya-pkA4a67zoqzxMtExxq3DZPYBSuovMD.jpeg"
+                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/communicationOfficer.jpeg"
                   alt="Ishaya Chingplang Happiness"
                   className="w-full h-full object-cover object-[center_5%] group-hover:scale-105 transition-transform duration-500"
                 />

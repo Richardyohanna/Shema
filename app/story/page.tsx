@@ -198,15 +198,17 @@ export default function StoryPage() {
                 Founded on a Vision of Hope
               </h2>
               <div className="space-y-4 text-foreground/80">
-                <p>
-                  SHEMA was established by a passionate team of humanitarian-minded individuals based in Maiduguri, Borno State, Nigeria. United by diverse backgrounds in fields such as engineering, education, and theology, the team brings together practical expertise and deep compassion to serve vulnerable communities.
-                </p>
-                <p>
-                  Driven by a shared conviction that lasting change requires both mentorship and practical action, the SHEMA team created this platform as a vehicle for dignified and inclusive community transformation. They believe that widows, orphans, and marginalized populations deserve more than temporary aid—they deserve empowerment, restoration, and the opportunity to thrive.
-                </p>
-                <p>
-                  What began as a small, community-driven initiative has grown into a movement of compassion and hope, impacting thousands of lives across Nigeria through collective effort, dedication, and unwavering commitment.
-                </p>
+               <p> SHEMA was born in the heart of  Maiduguri, Borno State a place that has witnessed pain, resilience, and the silent strength of its people. </p>
+
+               <p>  It began with a small group of passionate individuals, united not just by profession, but by a shared burden for humanity.</p>
+               <p>  From engineers to educators, from voices of knowledge to voices of faith, each member brought more than skills — they brought compassion, empathy, and a deep desire to make a difference where it mattered most.</p>
+               <p>  They had seen the tears of widows. </p>
+               <p>   They had heard the silent cries of orphans and vulnerable groups .</p>
+               <p> They had witnessed communities struggling not just to survive, but to find hope again.</p>
+               <p> And in those moments, they knew — something had to be done.</p>
+               <p> Driven by the belief that people deserve more than temporary relief, SHEMA was created as a platform for lasting impact. A place where lives are not just supported, but restored. Where dignity is not just spoken about, but given back. Where hope is not just imagined, but made real.</p>
+               <p>  What started as a small, humble initiative has now grown into a movement — a movement of love, of compassion, and of unwavering commitment. Today, SHEMA continues to touch thousands of lives across Nigeria, proving that when people come together with a heart to serve, even the smallest beginning can become a powerful force for change.</p>
+               <p>   At its core, SHEMA is more than an organization — It is a voice for the forgotten, A hand for the broken,  And a light for those searching for hope. </p>
               </div>
             </div>
 
