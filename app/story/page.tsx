@@ -5,92 +5,51 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useEffect, useRef, useState } from 'react';
 
+interface GalleryImage {
+  id: string;
+  src: string;
+  alt: string;
+  sourceType: string;
+  sourceId: string;
+}
+
 export default function StoryPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+  const [isLoadingGallery, setIsLoadingGallery] = useState(true);
+  const [galleryError, setGalleryError] = useState<string | null>(null);
+
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  const galleryImages = [
-    {
-      src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/2-rcCgTV0gwRW1rbww8I7AD54ufOjF73.png',
-      alt: 'SHEMA community outreach program',
-    },
-    {
-      src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1-GQ85XJH7PZy0G6uPqlhXCvDT8Qo0i3.png',
-      alt: 'SHEMA community gathering',
-    },
-    {
-      src: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3-e46ilDNlN2NWjaVwqBZo0M3gA1oy1k.png',
-      alt: 'SHEMA training program',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001117150.jpg.jpeg',
-      alt: 'SHEMA community event',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069477.jpg.jpeg',
-      alt: 'SHEMA community support',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069479.jpg.jpeg',
-      alt: 'SHEMA community empowerment',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069480.jpg.jpeg',
-      alt: 'SHEMA community development',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069481.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069486.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069487.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069492.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069497.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069503.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069505.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069506.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069532.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069547.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069587.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069588.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    },
-    {
-      src: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001069594.jpg.jpeg',
-      alt: 'SHEMA community transformation',
-    }
-  ];
+  useEffect(() => {
+    const loadGallery = async () => {
+      try {
+        setIsLoadingGallery(true);
+        setGalleryError(null);
+
+        const response = await fetch('/api/story-gallery', {
+          method: 'GET',
+          cache: 'no-store',
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setGalleryError(data?.error || 'Failed to load gallery images.');
+          return;
+        }
+
+        setGalleryImages(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Failed to load gallery:', error);
+        setGalleryError('Failed to load gallery images.');
+      } finally {
+        setIsLoadingGallery(false);
+      }
+    };
+
+    loadGallery();
+  }, []);
 
   const coreValues = [
     {
@@ -121,13 +80,16 @@ export default function StoryPage() {
 
   useEffect(() => {
     if (selectedImageIndex !== null) return;
+    if (galleryImages.length === 0) return;
 
     const container = scrollRef.current;
     if (!container) return;
 
-    let interval: NodeJS.Timeout;
+    let interval: NodeJS.Timeout | null = null;
 
     const startAutoScroll = () => {
+      if (interval) clearInterval(interval);
+
       interval = setInterval(() => {
         const maxScrollLeft = container.scrollWidth - container.clientWidth;
 
@@ -146,7 +108,10 @@ export default function StoryPage() {
     };
 
     const stopAutoScroll = () => {
-      clearInterval(interval);
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
     };
 
     startAutoScroll();
@@ -157,33 +122,47 @@ export default function StoryPage() {
     container.addEventListener('touchend', startAutoScroll);
 
     return () => {
-      clearInterval(interval);
+      stopAutoScroll();
       container.removeEventListener('mouseenter', stopAutoScroll);
       container.removeEventListener('mouseleave', startAutoScroll);
       container.removeEventListener('touchstart', stopAutoScroll);
       container.removeEventListener('touchend', startAutoScroll);
     };
-  }, [selectedImageIndex]);
+  }, [selectedImageIndex, galleryImages.length]);
 
   const showPreviousImage = () => {
-    if (selectedImageIndex === null) return;
-    setSelectedImageIndex((selectedImageIndex - 1 + galleryImages.length) % galleryImages.length);
+    if (selectedImageIndex === null || galleryImages.length === 0) return;
+
+    setSelectedImageIndex(
+      (selectedImageIndex - 1 + galleryImages.length) % galleryImages.length
+    );
   };
 
   const showNextImage = () => {
-    if (selectedImageIndex === null) return;
-    setSelectedImageIndex((selectedImageIndex + 1) % galleryImages.length);
+    if (selectedImageIndex === null || galleryImages.length === 0) return;
+
+    setSelectedImageIndex(
+      (selectedImageIndex + 1) % galleryImages.length
+    );
   };
+
+  const selectedImage =
+    selectedImageIndex !== null ? galleryImages[selectedImageIndex] : null;
 
   return (
     <main className="bg-white">
       <div className="bg-gray-50 border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-semibold mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-semibold mb-4"
+          >
             <ChevronLeft size={20} />
             Back to Home
           </Link>
-          <h1 className="text-4xl sm:text-5xl font-bold text-secondary mb-4">Our Story</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold text-secondary mb-4">
+            Our Story
+          </h1>
           <p className="text-lg text-foreground/70 max-w-2xl">
             Discover how SHEMA was founded and the journey that drives our mission to empower vulnerable communities.
           </p>
@@ -198,17 +177,39 @@ export default function StoryPage() {
                 Founded on a Vision of Hope
               </h2>
               <div className="space-y-4 text-foreground/80">
-               <p> SHEMA was born in the heart of  Maiduguri, Borno State a place that has witnessed pain, resilience, and the silent strength of its people. </p>
+                <p>
+                  SHEMA was born in the heart of Maiduguri, Borno State, a place that has witnessed pain, resilience, and the silent strength of its people.
+                </p>
 
-               <p>  It began with a small group of passionate individuals, united not just by profession, but by a shared burden for humanity.</p>
-               <p>  From engineers to educators, from voices of knowledge to voices of faith, each member brought more than skills — they brought compassion, empathy, and a deep desire to make a difference where it mattered most.</p>
-               <p>  They had seen the tears of widows. </p>
-               <p>   They had heard the silent cries of orphans and vulnerable groups .</p>
-               <p> They had witnessed communities struggling not just to survive, but to find hope again.</p>
-               <p> And in those moments, they knew — something had to be done.</p>
-               <p> Driven by the belief that people deserve more than temporary relief, SHEMA was created as a platform for lasting impact. A place where lives are not just supported, but restored. Where dignity is not just spoken about, but given back. Where hope is not just imagined, but made real.</p>
-               <p>  What started as a small, humble initiative has now grown into a movement — a movement of love, of compassion, and of unwavering commitment. Today, SHEMA continues to touch thousands of lives across Nigeria, proving that when people come together with a heart to serve, even the smallest beginning can become a powerful force for change.</p>
-               <p>   At its core, SHEMA is more than an organization — It is a voice for the forgotten, A hand for the broken,  And a light for those searching for hope. </p>
+                <p>
+                  It began with a small group of passionate individuals, united not just by profession, but by a shared burden for humanity.
+                </p>
+
+                <p>
+                  From engineers to educators, from voices of knowledge to voices of faith, each member brought more than skills — they brought compassion, empathy, and a deep desire to make a difference where it mattered most.
+                </p>
+
+                <p>They had seen the tears of widows.</p>
+
+                <p>They had heard the silent cries of orphans and vulnerable groups.</p>
+
+                <p>
+                  They had witnessed communities struggling not just to survive, but to find hope again.
+                </p>
+
+                <p>And in those moments, they knew — something had to be done.</p>
+
+                <p>
+                  Driven by the belief that people deserve more than temporary relief, SHEMA was created as a platform for lasting impact. A place where lives are not just supported, but restored. Where dignity is not just spoken about, but given back. Where hope is not just imagined, but made real.
+                </p>
+
+                <p>
+                  What started as a small, humble initiative has now grown into a movement — a movement of love, of compassion, and of unwavering commitment. Today, SHEMA continues to touch thousands of lives across Nigeria, proving that when people come together with a heart to serve, even the smallest beginning can become a powerful force for change.
+                </p>
+
+                <p>
+                  At its core, SHEMA is more than an organization — it is a voice for the forgotten, a hand for the broken, and a light for those searching for hope.
+                </p>
               </div>
             </div>
 
@@ -254,7 +255,10 @@ export default function StoryPage() {
           <h2 className="text-3xl font-bold text-secondary mb-12">Our Core Values</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {coreValues.map((value, idx) => (
-              <div key={idx} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+              <div
+                key={idx}
+                className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition"
+              >
                 <h3 className="text-xl font-bold text-secondary mb-3">{value.title}</h3>
                 <p className="text-foreground/70">{value.description}</p>
               </div>
@@ -265,37 +269,50 @@ export default function StoryPage() {
         <section className="mb-20">
           <h2 className="text-3xl font-bold text-secondary mb-12">Our Journey in Pictures</h2>
 
-          <div
-            ref={scrollRef}
-            className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth"
-          >
-            <div className="flex gap-6 w-max">
-              {galleryImages.map((image, idx) => (
-                <div
-                  key={idx}
-                  className="relative h-64 sm:h-80 w-80 sm:w-[400px] flex-shrink-0 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition group cursor-pointer"
-                  onClick={() => setSelectedImageIndex(idx)}
-                >
-                  <img
-                    src={image.src}
-                    alt={image.alt}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center">
-                    <div className="opacity-0 group-hover:opacity-100 transition">
-                      <div className="text-white text-sm font-semibold bg-black/60 px-4 py-2 rounded">
-                        Click to view
+          {isLoadingGallery ? (
+            <div className="text-center py-12">
+              <p className="text-foreground/70 text-lg">Loading gallery...</p>
+            </div>
+          ) : galleryError ? (
+            <div className="text-center py-12">
+              <p className="text-red-600 text-lg">{galleryError}</p>
+            </div>
+          ) : galleryImages.length === 0 ? (
+            <div className="text-center py-12 border border-dashed border-gray-300 rounded-xl">
+              <p className="text-foreground/70 text-lg">No gallery images available yet.</p>
+            </div>
+          ) : (
+            <div
+              ref={scrollRef}
+              className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth"
+            >
+              <div className="flex gap-6 w-max">
+                {galleryImages.map((image, idx) => (
+                  <div
+                    key={image.id}
+                    className="relative h-64 sm:h-80 w-80 sm:w-[400px] flex-shrink-0 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition group cursor-pointer"
+                    onClick={() => setSelectedImageIndex(idx)}
+                  >
+                    <img
+                      src={image.src}
+                      alt={image.alt}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center">
+                      <div className="opacity-0 group-hover:opacity-100 transition">
+                        <div className="text-white text-sm font-semibold bg-black/60 px-4 py-2 rounded">
+                          Click to view
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-
+          )}
         </section>
 
-        {selectedImageIndex !== null && (
+        {selectedImage && (
           <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
             <button
               onClick={() => setSelectedImageIndex(null)}
@@ -314,8 +331,8 @@ export default function StoryPage() {
 
               <div className="flex-1 flex justify-center">
                 <img
-                  src={galleryImages[selectedImageIndex].src}
-                  alt={galleryImages[selectedImageIndex].alt}
+                  src={selectedImage.src}
+                  alt={selectedImage.alt}
                   className="max-w-full max-h-[80vh] object-contain rounded-lg"
                 />
               </div>
@@ -329,7 +346,7 @@ export default function StoryPage() {
             </div>
 
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/60 px-4 py-2 rounded-full text-sm">
-              {selectedImageIndex + 1} / {galleryImages.length}
+              {selectedImageIndex! + 1} / {galleryImages.length}
             </div>
           </div>
         )}

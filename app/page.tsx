@@ -14,6 +14,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';  
 import { PartnerModal } from '@/components/partner-modal';
+//import { getAllNews, NewsPost } from '@/lib/news-storage';
+import { NewsCard } from '@/components/news-card';
+import type { NewsPost } from '@/lib/news';
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,7 +34,25 @@ export default function Home() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [latestNews, setLatestNews] = useState<NewsPost[]>([]);
 
+useEffect(() => {
+  const loadLatestNews = async () => {
+    try {
+      const response = await fetch('/api/news', { cache: 'no-store' });
+      const data = await response.json();
+
+      if (response.ok) {
+        setLatestNews(data.slice(0, 3));
+      }
+    } catch (error) {
+      console.error('Failed to load latest news:', error);
+    }
+  };
+
+  loadLatestNews();
+}, []);
+  
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 400);
@@ -661,6 +682,35 @@ export default function Home() {
         </div>
       </section>
 
+        <section className="py-16 sm:py-24 bg-gray-50 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <p className="text-foreground/60 font-semibold text-xs uppercase tracking-widest mb-4">Latest Updates</p>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-secondary mb-6 leading-tight">News & Updates</h2>
+            <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed mb-8">
+              Stay informed about SHEMA&apos;s latest programs, community outreach initiatives, and success stories
+            </p>
+            <Link href="/news">
+              <Button className="bg-secondary hover:bg-secondary/90 text-white font-semibold px-8 gap-2">
+                View All News <ChevronRight size={20} />
+              </Button>
+            </Link>
+          </div>
+
+          {latestNews.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {latestNews.map((post) => (
+                <NewsCard key={post.id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
+              <p className="text-foreground/70 text-lg">No news posts available yet.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* Partnership Section */}
       <section id="partnership" className="py-16 sm:py-24 bg-secondary text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -893,9 +943,7 @@ export default function Home() {
               <p className="text-sm text-white/70 mb-4">
                 Join us in making a meaningful difference in vulnerable communities.
               </p>
-              <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-sm">
-                Get Involved
-              </Button>
+              
             </div>
           </div>
 

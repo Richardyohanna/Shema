@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-
     const { name, email, organization, partnershipType, message } = body;
 
-    // Validate required fields
     if (!name || !email || !partnershipType || !message) {
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -17,27 +16,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Log the inquiry (in production, send email or store in database)
-    console.log('[SHEMA Partnership Inquiry]', {
-      name,
-      email,
-      organization,
-      partnershipType,
-      message,
-      timestamp: new Date().toISOString(),
-    });
+    const { error: dbError } = await supabaseAdmin
+      .from('partnership_inquiries')
+      .insert({
+        name,
+        email,
+        organization: organization || null,
+        partnership_type: partnershipType,
+        message,
+      });
 
-    // For now, we'll just return success
-    // In production, you'd integrate with:
-    // - SendGrid/Mailgun for email notifications
-    // - Supabase/database for storing inquiries
-    // - Slack webhooks for team notifications
+    if (dbError) {
+      console.error('Supabase insert error:', dbError);
+      return NextResponse.json({ error: 'Failed to save inquiry' }, { status: 500 });
+    }
 
-    // 📩 Send email
-    const data = await resend.emails.send({
-      from: 'Shema <info@shemahumantarianservice.org>', // change later
-      to: ['shemahumanitarianservices@gmail.com'], 
-      
+    await resend.emails.send({
+      from: 'Shema <info@shemahumantarianservice.org>',
+      to: ['shemahumanitarianservices@gmail.com'],
       subject: `New Partnership Inquiry from ${name}`,
       replyTo: email,
       html: `
@@ -51,22 +47,17 @@ export async function POST(request: NextRequest) {
       `,
     });
 
-
-
     await resend.emails.send({
       from: 'Shema <info@shemahumantarianservice.org>',
       to: [email],
       subject: 'We received your inquiry',
-      replyTo: `shemahumanitarianservices@gmail.com`,
+      replyTo: 'shemahumanitarianservices@gmail.com',
       html: `
         <p>Hi ${name},</p>
         <p>Thank you for reaching out to Shema Humanitarian.</p>
         <p>We will get back to you shortly.</p>
       `,
     });
-
-    console.log('Email sent:', data);
-
 
     return NextResponse.json(
       {
