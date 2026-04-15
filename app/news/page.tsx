@@ -105,13 +105,7 @@ export default function NewsPage() {
           </div>
         )}
 
-        <div className="mt-16 pt-12 border-t border-gray-200 text-center">
-          <Link href="/admin">
-            <Button variant="outline" className="border-gray-300 hover:bg-gray-50">
-              Admin Dashboard
-            </Button>
-          </Link>
-        </div>
+
       </div>
     </div>
   );
