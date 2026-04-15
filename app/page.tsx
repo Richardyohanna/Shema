@@ -1,9 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Menu, X, ChevronRight, Heart, Users, BookOpen, Lightbulb, ChevronUp } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import {
@@ -12,18 +10,20 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';  
+} from '@/components/ui/select';
 import { PartnerModal } from '@/components/partner-modal';
-//import { getAllNews, NewsPost } from '@/lib/news-storage';
 import { NewsCard } from '@/components/news-card';
 import type { NewsPost } from '@/lib/news';
+
+type CookieConsent = 'accepted' | 'rejected' | null;
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [partnerModalOpen, setPartnerModalOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-
+  const [cookieConsent, setCookieConsent] = useState<CookieConsent>(null);
+  const [isCookieBannerReady, setIsCookieBannerReady] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -32,27 +32,43 @@ export default function Home() {
     partnershipType: '',
     message: '',
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [latestNews, setLatestNews] = useState<NewsPost[]>([]);
 
-useEffect(() => {
-  const loadLatestNews = async () => {
-    try {
-      const response = await fetch('/api/news', { cache: 'no-store' });
-      const data = await response.json();
-
-      if (response.ok) {
-        setLatestNews(data.slice(0, 3));
-      }
-    } catch (error) {
-      console.error('Failed to load latest news:', error);
+  useEffect(() => {
+    const savedConsent = localStorage.getItem('shema_cookie_consent') as CookieConsent;
+    if (savedConsent === 'accepted' || savedConsent === 'rejected') {
+      setCookieConsent(savedConsent);
+    } else {
+      setCookieConsent(null);
     }
+    setIsCookieBannerReady(true);
+  }, []);
+
+  const handleCookieConsent = (choice: Exclude<CookieConsent, null>) => {
+    localStorage.setItem('shema_cookie_consent', choice);
+    setCookieConsent(choice);
   };
 
-  loadLatestNews();
-}, []);
-  
+  useEffect(() => {
+    const loadLatestNews = async () => {
+      try {
+        const response = await fetch('/api/news', { cache: 'no-store' });
+        const data = await response.json();
+
+        if (response.ok) {
+          setLatestNews(data.slice(0, 3));
+        }
+      } catch (error) {
+        console.error('Failed to load latest news:', error);
+      }
+    };
+
+    loadLatestNews();
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 400);
@@ -64,7 +80,14 @@ useEffect(() => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const heroSlidesLength = heroSlides.length;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlidesLength);
+    }, 5000);
 
+    return () => clearInterval(interval);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -80,7 +103,6 @@ useEffect(() => {
     setIsSubmitting(true);
 
     try {
-      // Send email via API route
       const response = await fetch('/api/partner-inquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -96,9 +118,9 @@ useEffect(() => {
           partnershipType: '',
           message: '',
         });
+
         setTimeout(() => {
           setSubmitted(false);
-         
         }, 2000);
       } else {
         alert('Failed to submit form. Please try again.');
@@ -111,7 +133,6 @@ useEffect(() => {
     }
   };
 
-  // Services data
   const servicesData = [
     {
       id: 'trauma-recovery',
@@ -123,13 +144,13 @@ useEffect(() => {
       id: 'practical-support',
       title: 'Practical Support',
       shortDescription: 'Food, shelter, and essential resources for the most vulnerable',
-      image: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001117122.jpg.jpeg',//'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3-e46ilDNlN2NWjaVwqBZo0M3gA1oy1k.png',
+      image: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001117122.jpg.jpeg',
     },
     {
       id: 'financial-support',
       title: 'Financial Support',
       shortDescription: 'Grants, scholarships, and economic empowerment initiatives',
-      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3-e46ilDNlN2NWjaVwqBZo0M3gA1oy1k.png', //'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1-GQ85XJH7PZy0G6uPqlhXCvDT8Qo0i3.png',
+      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3-e46ilDNlN2NWjaVwqBZo0M3gA1oy1k.png',
     },
     {
       id: 'community-building',
@@ -157,15 +178,8 @@ useEffect(() => {
     },
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
   const scrollToHero = () => {
-  const heroSection = document.getElementById('hero');
+    const heroSection = document.getElementById('hero');
     if (heroSection) {
       heroSection.scrollIntoView({ behavior: 'smooth' });
     }
@@ -173,34 +187,32 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <img 
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-KtnZuXrQpfsOSAzAMlc8jMwLJshwuj.png" 
-                alt="SHEMA Logo" 
+              <img
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-KtnZuXrQpfsOSAzAMlc8jMwLJshwuj.png"
+                alt="SHEMA Logo"
                 className="h-10 w-10"
               />
               <span className="font-bold text-lg text-secondary">SHEMA</span>
             </div>
 
-            {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
               <Link href="#about" className="text-foreground hover:text-primary transition">About</Link>
               <Link href="#team" className="text-foreground hover:text-primary transition">Team</Link>
               <Link href="#services" className="text-foreground hover:text-primary transition">Services</Link>
               <Link href="#partnership" className="text-foreground hover:text-primary transition">Partnership</Link>
               <Link href="#contact" className="text-foreground hover:text-primary transition">Contact</Link>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              <Button
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 onClick={() => setPartnerModalOpen(true)}
               >
                 Partner With Us
               </Button>
             </div>
 
-            {/* Mobile Menu Button */}
             <div className="md:hidden">
               <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                 {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -208,7 +220,6 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* Mobile Menu */}
           {mobileMenuOpen && (
             <div className="md:hidden pb-4 flex flex-col gap-3">
               <Link href="#about" className="text-foreground hover:text-primary">About</Link>
@@ -216,7 +227,10 @@ useEffect(() => {
               <Link href="#services" className="text-foreground hover:text-primary">Services</Link>
               <Link href="#partnership" className="text-foreground hover:text-primary">Partnership</Link>
               <Link href="#contact" className="text-foreground hover:text-primary">Contact</Link>
-              <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+              <Button
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                onClick={() => setPartnerModalOpen(true)}
+              >
                 Partner With Us
               </Button>
             </div>
@@ -224,9 +238,7 @@ useEffect(() => {
         </div>
       </nav>
 
-      {/* Hero Section - Carousel */}
       <section id="hero" className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
-        {/* Carousel Slides */}
         {heroSlides.map((slide, index) => (
           <div
             key={index}
@@ -246,37 +258,32 @@ useEffect(() => {
           </div>
         ))}
 
-        {/* Content Overlay */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className={`transition-all duration-1000 ease-out ${
-            'opacity-100 translate-y-0'
-          }`}>
+          <div className="transition-all duration-1000 ease-out opacity-100 translate-y-0">
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 text-balance leading-tight drop-shadow-lg">
               {heroSlides[currentSlide].title}
             </h1>
           </div>
-          <div className={`transition-all duration-1000 delay-300 ease-out ${
-            'opacity-100 translate-y-0'
-          }`}>
+
+          <div className="transition-all duration-1000 delay-300 ease-out opacity-100 translate-y-0">
             <p className="text-lg sm:text-xl lg:text-2xl text-white mb-8 text-balance max-w-3xl mx-auto leading-relaxed drop-shadow-md font-medium">
               {heroSlides[currentSlide].subtitle}
             </p>
           </div>
-          <div className={`transition-all duration-1000 delay-500 ease-out ${
-            'opacity-100 translate-y-0'
-          }`}>
+
+          <div className="transition-all duration-1000 delay-500 ease-out opacity-100 translate-y-0">
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Link href="/story">
-                <Button 
+                <Button
                   size="lg"
                   className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
                 >
                   Learn More <ChevronRight className="ml-2" size={20} />
                 </Button>
               </Link>
-              
+
               <Link href="#contact">
-                <Button 
+                <Button
                   size="lg"
                   variant="outline"
                   className="bg-white/10 hover:bg-white/20 text-white border-white/30"
@@ -284,11 +291,9 @@ useEffect(() => {
                   Get Involved
                 </Button>
               </Link>
-              
             </div>
           </div>
 
-          {/* Carousel Dots */}
           <div className="flex justify-center gap-3 mt-8">
             {heroSlides.map((_, index) => (
               <button
@@ -306,15 +311,14 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* About Section */}
       <section id="about" className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-secondary mb-4">About SHEMA</h2>
             <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-              SHEMA is a non-governmental organization founded on the principle that every human being deserves care, opportunity, and dignity  regardless of race, faith, or background. Our name is an acronym for Strengthening Humanity through Empowerment, Mentorship, and Advocacy, and it defines everything we do.
-              <br/>
-              we operate with a singular focus: to equip vulnerable groups including  widows, orphans, and marginalized communities  by providing skills acquisition, knowledge, and support they need to thrive and lead with dignity.
+              SHEMA is a non-governmental organization founded on the principle that every human being deserves care, opportunity, and dignity regardless of race, faith, or background. Our name is an acronym for Strengthening Humanity through Empowerment, Mentorship, and Advocacy, and it defines everything we do.
+              <br />
+              we operate with a singular focus: to equip vulnerable groups including widows, orphans, and marginalized communities by providing skills acquisition, knowledge, and support they need to thrive and lead with dignity.
             </p>
           </div>
 
@@ -353,44 +357,22 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* Founder Section */}
           <div className="bg-gradient-to-br from-gray-50 via-white to-gray-100 rounded-xl p-8 sm:p-12 border border-gray-200 mt-12">
-            {/* Top Quote */}
             <p className="text-center text-2xl sm:text-3xl italic text-foreground/80 mb-12 max-w-3xl mx-auto leading-relaxed">
               "We believe every community deserves dignity, opportunity, and hope."
             </p>
 
-            {/* Main Founder Section */}
             <div className="items-center">
-              {/* Founder Image - Left Side */}
-             {/* <div className="flex justify-center lg:justify-start">
-                <div className="w-full max-w-sm">
-                  <div className="relative rounded-3xl overflow-hidden shadow-xl w-full h-[410px]">
-                    <img
-                      src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/nuhu.jpg" //https://pltuxx4q1i7colum.public.blob.vercel-storage.com/founder.jpeg"
-                      alt="Nuhu John Ndavagi - SHEMA Founder"
-                      className="w-auto h-auto object-cover scale-x-[-1] "
-                    />
-                  </div>
-                </div>
-              </div> */}
-
-              {/* Founder Message - Right Side */}
               <div>
                 <h2 className="text-3xl sm:text-4xl font-bold text-secondary mb-6 leading-tight">
                   Message
                 </h2>
-                
+
                 <p className="text-foreground/80 text-lg leading-relaxed mb-8">
                   We started with a simple belief — that small act of service can transform lives. Today, we&apos;re demonstrating that when we come together, even the smallest steps can lead to meaningful change for our communities.
                 </p>
 
                 <div>
-                 {/* } <h3 className="text-2xl font-bold text-secondary">Nuhu John Ndavagi</h3>
-                  <p className="text-primary font-semibold text-lg mb-6">Founder, SHEMA Humanitarian</p> 
-                  
-                  */}
-
                   <Link href="/story">
                     <Button className="bg-secondary hover:bg-secondary/90 text-white font-semibold py-6 px-8 text-base">
                       Read Our Story
@@ -403,7 +385,6 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* Meet Our Team Section */}
       <section id="team" className="-mt-25 py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
@@ -413,16 +394,12 @@ useEffect(() => {
               Dedicated professionals with diverse expertise and a shared commitment to transforming lives and creating lasting impact in vulnerable communities across Nigeria
             </p>
           </div>
-         
-         {/*Founder */}
-          
-           <div className="flex justify-center items-center -mt-10 mb-15">
-            {/* Nuhu */}
+
+          <div className="flex justify-center items-center -mt-10 mb-15">
             <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 max-w-sm w-full">
-              
               <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
-                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/founder.jpeg" //https://pltuxx4q1i7colum.public.blob.vercel-storage.com/nuhu.jpg"
+                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/founder.jpeg"
                   alt="Nuhu John Ndavagi - SHEMA Founder"
                   className="w-full h-full object-cover object-[center_40%] group-hover:scale-105 transition-transform duration-500"
                 />
@@ -432,17 +409,14 @@ useEffect(() => {
                 <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Nuhu John Ndavagi</h3>
                 <p className="text-primary font-semibold text-sm sm:text-base">Chief Executive Officer</p>
               </div>
-
             </div>
           </div>
-         
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {/* Roland Jacob */}
             <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
               <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
-                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/Roland.jpg" //https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Roland%20Jacob-sd6rfiovKzaGDclK0kEobruATM3Otw.jpeg"
+                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/Roland.jpg"
                   alt="Roland Jacob"
                   className="w-full h-full object-cover object-[center_40%] group-hover:scale-105 transition-transform duration-500"
                 />
@@ -453,11 +427,10 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Precious Hosea */}
             <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
               <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
-                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/Precious.jpg" //https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Precios%20Hosea-ZtFyY7Vq5237AHyPWJxc683m8WPFsz.jpeg"
+                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/Precious.jpg"
                   alt="Precious Hosea"
                   className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
                 />
@@ -468,37 +441,6 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Emmanuel Amos */}
-           {/*} <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
-                <img
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Emmanuel%20Amos-JfSyDBjrrRiAoJ66m4Ta2gSyaS6ZZ5.jpeg"
-                  alt="Emmanuel Amos"
-                  className="w-full h-full object-cover object-[center_10%] group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
-                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Emmanuel Amos</h3>
-                <p className="text-primary font-semibold text-sm sm:text-base">Head of Program</p>
-              </div>
-            </div> */}
-
-            {/* Alex Wulsog */}
-           {/*} <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
-                <img
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Alex%20Wuslong-gh54rAPzWm8dNBioD3bMsyonm33jOB.jpeg"
-                  alt="Alex Wulsog"
-                  className="w-full h-full-45 object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
-                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Alex Wulsog</h3>
-                <p className="text-primary font-semibold text-sm sm:text-base">Head of Operation</p>
-              </div>
-            </div> */}
-
-            {/* Yakubu Joshua - No Photo */}
             <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
               <div className="h-80 sm:h-96 bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center relative">
                 <div className="text-center">
@@ -513,7 +455,6 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Ishaya Chingplan Happiness */}
             <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
               <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
@@ -527,60 +468,14 @@ useEffect(() => {
                 <p className="text-primary font-semibold text-sm sm:text-base">Communication Officer</p>
               </div>
             </div>
-
-            {/* Nuhu Ashonya Ajiga */}
-           {/* <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
-                <img
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Nuhu%20Ashonya%20Ajiga-0Boo8IM9hLTIqyWneiut38fclt19Uz.jpeg"
-                  alt="Amb Nuhu Ashonya Ajiga"
-                  className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
-                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Amb Nuhu Ashonya Ajiga</h3>
-                <p className="text-primary font-semibold text-sm sm:text-base">Partnership & Resources</p>
-              </div>
-            </div> */}
-
-            {/* Terry M. Pam */}
-          {/*  <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
-                <img
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Terrisom%20M.%20Pam-7v4yuIN8qe4iPih5oSvI84Dq04Sklg.jpeg"
-                  alt="Terry M. Pam"
-                  className="w-full h-full-20 object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
-                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Terry M. Pam</h3>
-                <p className="text-primary font-semibold text-sm sm:text-base">National Coordinator</p>
-              </div>
-            </div> */}
-
-             {/* Alpha Ishaya Balami*/}
-            {/* <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
-              <div className="h-80 sm:h-96 bg-white overflow-hidden relative">
-                <img
-                  src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/Alpha.jpg"
-                  alt="Alpha Ishaya Balami"
-                  className=" w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="p-6 sm:p-8 text-center border-t border-gray-100">
-                <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Alpha Ishaya Balami</h3>
-                <p className="text-primary font-semibold text-sm sm:text-base">Health Director</p>
-              </div>
-            </div> */}
           </div>
         </div>
       </section>
 
-      {/* Core Values Section */}
       <section className="py-16 sm:py-24 bg-secondary text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl sm:text-4xl font-bold text-center mb-16">Our Core Values</h2>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               { icon: Heart, title: 'Compassion', desc: 'Demonstrating empathy and kindness toward those in need' },
@@ -600,26 +495,22 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* Services Section */}
       <section id="services" className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
           <div className="text-center mb-12 sm:mb-16">
             <p className="text-foreground/60 font-semibold text-xs uppercase tracking-widest mb-4 letter-spacing-wider">Our Services</p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-secondary mb-4 leading-tight">
               How We Make a Difference
             </h2>
-            <p className="text-foreground/70 text-lg max-w-2xl mx-auto">We provide comprehensive support across multiple service areas to empower vulnerable communities and create lasting change.</p>
+            <p className="text-foreground/70 text-lg max-w-2xl mx-auto">
+              We provide comprehensive support across multiple service areas to empower vulnerable communities and create lasting change.
+            </p>
           </div>
-          
-          {/* Service Cards Grid */}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {servicesData.map((service) => (
               <Link key={service.id} href={`/services/${service.id}`}>
-                <div
-                  className="group overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 bg-white cursor-pointer h-full"
-                >
-                  {/* Image Container */}
+                <div className="group overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 bg-white cursor-pointer h-full">
                   <div className="relative h-64 sm:h-72 overflow-hidden bg-gray-200">
                     <img
                       src={service.image}
@@ -627,10 +518,11 @@ useEffect(() => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                  
-                  {/* Content */}
+
                   <div className="p-6 sm:p-7">
-                    <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-3 leading-tight">{service.title}</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-3 leading-tight">
+                      {service.title}
+                    </h3>
                     <p className="text-foreground/70 text-sm sm:text-base leading-relaxed">
                       {service.shortDescription}
                     </p>
@@ -640,10 +532,11 @@ useEffect(() => {
             ))}
           </div>
 
-          {/* Areas of Concentration */}
           <div className="bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100 rounded-xl p-8 sm:p-12 border border-gray-200">
             <h3 className="text-2xl sm:text-3xl font-bold text-secondary mb-3">Areas of Concentration</h3>
-            <p className="text-foreground/70 mb-8 max-w-2xl">Our strategic focus areas ensure sustainable impact and meaningful transformation in vulnerable communities.</p>
+            <p className="text-foreground/70 mb-8 max-w-2xl">
+              Our strategic focus areas ensure sustainable impact and meaningful transformation in vulnerable communities.
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
               {[
                 {
@@ -682,7 +575,7 @@ useEffect(() => {
         </div>
       </section>
 
-        <section className="py-16 sm:py-24 bg-gray-50 border-t border-gray-200">
+      <section className="py-16 sm:py-24 bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <p className="text-foreground/60 font-semibold text-xs uppercase tracking-widest mb-4">Latest Updates</p>
@@ -711,7 +604,6 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* Partnership Section */}
       <section id="partnership" className="py-16 sm:py-24 bg-secondary text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6">Partnership Opportunities</h2>
@@ -758,7 +650,7 @@ useEffect(() => {
             <p className="text-primary-foreground/90 mb-6">
               Together, we can demonstrate love in action—serving humanity with unity, compassion, and purpose.
             </p>
-            <Button 
+            <Button
               size="lg"
               className="bg-primary-foreground hover:bg-primary-foreground/90 text-primary font-semibold"
               onClick={() => setPartnerModalOpen(true)}
@@ -769,7 +661,6 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* Contact Section */}
       <section id="contact" className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl sm:text-4xl font-bold text-secondary text-center mb-16">Get In Touch</h2>
@@ -777,24 +668,8 @@ useEffect(() => {
           <div className="grid md:grid-cols-2 gap-12">
             <div>
               <h3 className="text-xl font-bold text-secondary mb-6">Contact Information</h3>
-              
-            <div className="space-y-8">
-                {/* 
-                <div>
-                  <h4 className="font-bold text-secondary mb-2">Executive Director</h4>
-                  <p className="text-foreground/80">Roland Jacob</p>
-                  <p className="text-primary font-semibold">+234 9033 072 314</p>
-                  <p className="text-foreground/70 break-all">shemahumanitarianservices@gmail.com</p>
-                </div>
 
-                <div>
-                  <h4 className="font-bold text-secondary mb-2">Founder & CEO</h4>
-                  <p className="text-foreground/80">Nuhu John Ndavagi</p>
-                  <p className="text-primary font-semibold">+234 9029 615 664</p>
-                  <p className="text-foreground/70">Maiduguri, Borno State, Nigeria</p>
-                </div>
-              */}
-
+              <div className="space-y-8">
                 <div>
                   <h4 className="font-bold text-secondary mb-2">Communication Officer</h4>
                   <p className="text-foreground/80">Happiness Ishaya Chingplang</p>
@@ -802,9 +677,9 @@ useEffect(() => {
                   <ul>
                     <li>
                       <a href="https://web.facebook.com/profile.php?id=61578723781841" className="hover:text-white transition"><img src="/facebookBlack.png" alt="Facebook" className="h-10 w-10 inline-block mr-5 filter grayscale hover:grayscale-10 transition" /></a>
-                      <a href="https://www.youtube.com/@shemahumanitarianservice?fbclid=IwY2xjawREUlZleHRuA2FlbQIxMABicmlkETFQRmpqN0lSV3JtYktSb3N1c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhpHvKEdi8SyimrCS_otogqCFusJ5_eKXBzY-aNHbK24S2QlHl9WrwW2s0O5_aem_SjkeKZT8CEi9IltxpxWLeQ" className="hover:text-white transition"><img src="/youtubeBlack.png" alt="Twitter" className="h-10 w-10 inline-block mr-5" /></a>
+                      <a href="https://www.youtube.com/@shemahumanitarianservice?fbclid=IwY2xjawREUlZleHRuA2FlbQIxMABicmlkETFQRmpqN0lSV3JtYktSb3N1c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhpHvKEdi8SyimrCS_otogqCFusJ5_eKXBzY-aNHbK24S2QlHl9WrwW2s0O5_aem_SjkeKZT8CEi9IltxpxWLeQ" className="hover:text-white transition"><img src="/youtubeBlack.png" alt="YouTube" className="h-10 w-10 inline-block mr-5" /></a>
                       <a href="https://www.instagram.com/shemahumanitarianservice?fbclid=IwY2xjawREUfpleHRuA2FlbQIxMABicmlkETFQRmpqN0lSV3JtYktSb3N1c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhpHvKEdi8SyimrCS_otogqCFusJ5_eKXBzY-aNHbK24S2QlHl9WrwW2s0O5_aem_SjkeKZT8CEi9IltxpxWLeQ" className="hover:text-white transition"><img src="/instagramBlack.png" alt="Instagram" className="h-10 w-10 inline-block mr-5" /></a>
-                    </li> 
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -812,11 +687,11 @@ useEffect(() => {
 
             <div>
               <h3 className="text-xl font-bold text-secondary mb-6">Send us a Message</h3>
-              
+
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">Name</label>
-                  <input 
+                  <input
                     name="name"
                     type="text"
                     placeholder="Your name"
@@ -828,7 +703,7 @@ useEffect(() => {
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">Email</label>
-                  <input 
+                  <input
                     name="email"
                     type="email"
                     placeholder="your@email.com"
@@ -840,7 +715,7 @@ useEffect(() => {
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">Organization</label>
-                  <input 
+                  <input
                     name="organization"
                     type="text"
                     placeholder="Your organization"
@@ -852,25 +727,25 @@ useEffect(() => {
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">Interest</label>
-                <Select value={formData.partnershipType} onValueChange={handleSelectChange}>
-                  <SelectTrigger className="border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 h-11 rounded-lg">
-                    <SelectValue placeholder="Select your interest" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="mentorship">Mentorship Programs</SelectItem>
-                    <SelectItem value="outreach">Community Outreaches</SelectItem>
-                    <SelectItem value="monetary">Monetary Donations</SelectItem>
-                    <SelectItem value="in-kind">In-Kind Donations</SelectItem>
-                    <SelectItem value="sponsorship">Sponsorship</SelectItem>
-                    <SelectItem value="prayer">Prayers & Advocacy</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <Select value={formData.partnershipType} onValueChange={handleSelectChange}>
+                    <SelectTrigger className="border-gray-300 focus:border-primary focus:ring-primary bg-gray-50 h-11 rounded-lg">
+                      <SelectValue placeholder="Select your interest" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="mentorship">Mentorship Programs</SelectItem>
+                      <SelectItem value="outreach">Community Outreaches</SelectItem>
+                      <SelectItem value="monetary">Monetary Donations</SelectItem>
+                      <SelectItem value="in-kind">In-Kind Donations</SelectItem>
+                      <SelectItem value="sponsorship">Sponsorship</SelectItem>
+                      <SelectItem value="prayer">Prayers & Advocacy</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">Message</label>
-                  <textarea 
+                  <textarea
                     name="message"
                     placeholder="Tell us about your partnership interest..."
                     value={formData.message}
@@ -880,16 +755,18 @@ useEffect(() => {
                   ></textarea>
                 </div>
 
-                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
-                  
-
-
+                <Button
+                  type="submit"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>
+
                 {submitted && (
-                  <p className="text-green-600 text-sm mt-2">Your message has been sent successfully!</p>
+                  <p className="text-green-600 text-sm mt-2">
+                    Your message has been sent successfully!
+                  </p>
                 )}
               </form>
             </div>
@@ -897,15 +774,14 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-secondary text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8 mb-12">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <img 
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-KtnZuXrQpfsOSAzAMlc8jMwLJshwuj.png" 
-                  alt="SHEMA Logo" 
+                <img
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-KtnZuXrQpfsOSAzAMlc8jMwLJshwuj.png"
+                  alt="SHEMA Logo"
                   className="h-8 w-8"
                 />
                 <span className="font-bold">SHEMA</span>
@@ -932,18 +808,26 @@ useEffect(() => {
                 <li>Maiduguri, Borno State, Nigeria</li>
                 <li>
                   <a href="https://web.facebook.com/profile.php?id=61578723781841" className="hover:text-white transition"><img src="/facebook.png" alt="Facebook" className="h-5 w-5 inline-block mr-5" /></a>
-                  <a href="https://www.youtube.com/@shemahumanitarianservice?fbclid=IwY2xjawREUlZleHRuA2FlbQIxMABicmlkETFQRmpqN0lSV3JtYktSb3N1c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhpHvKEdi8SyimrCS_otogqCFusJ5_eKXBzY-aNHbK24S2QlHl9WrwW2s0O5_aem_SjkeKZT8CEi9IltxpxWLeQ" className="hover:text-white transition"><img src="/youtube.png" alt="Twitter" className="h-5 w-5 inline-block mr-5" /></a>
+                  <a href="https://www.youtube.com/@shemahumanitarianservice?fbclid=IwY2xjawREUlZleHRuA2FlbQIxMABicmlkETFQRmpqN0lSV3JtYktSb3N1c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhpHvKEdi8SyimrCS_otogqCFusJ5_eKXBzY-aNHbK24S2QlHl9WrwW2s0O5_aem_SjkeKZT8CEi9IltxpxWLeQ" className="hover:text-white transition"><img src="/youtube.png" alt="YouTube" className="h-5 w-5 inline-block mr-5" /></a>
                   <a href="https://www.instagram.com/shemahumanitarianservice?fbclid=IwY2xjawREUfpleHRuA2FlbQIxMABicmlkETFQRmpqN0lSV3JtYktSb3N1c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhpHvKEdi8SyimrCS_otogqCFusJ5_eKXBzY-aNHbK24S2QlHl9WrwW2s0O5_aem_SjkeKZT8CEi9IltxpxWLeQ" className="hover:text-white transition"><img src="/instagram.png" alt="Instagram" className="h-5 w-5 inline-block mr-5" /></a>
-                </li> 
+                </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold mb-4">Partnership</h4>
-              <p className="text-sm text-white/70 mb-4">
-                Join us in making a meaningful difference in vulnerable communities.
-              </p>
-              
+              <h4 className="font-bold mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm text-white/70">
+                <li>
+                  <Link href="/privacy-policy" className="hover:text-white transition">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/cookie-policy" className="hover:text-white transition">
+                    Cookie Policy
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
 
@@ -964,7 +848,49 @@ useEffect(() => {
         </button>
       )}
 
-      {/* Partner Modal */}
+      {isCookieBannerReady && cookieConsent === null && (
+        <div className="fixed bottom-0 inset-x-0 z-[60] px-4 pb-4">
+          <div className="max-w-5xl mx-auto bg-white border border-gray-200 shadow-2xl rounded-2xl p-5 sm:p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div className="max-w-3xl">
+                <h3 className="text-lg sm:text-xl font-bold text-secondary mb-2">
+                  Privacy & Cookie Notice
+                </h3>
+                <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">
+                  We use cookies to improve your browsing experience, understand site traffic, and support essential website functionality.
+                  By clicking <span className="font-semibold text-secondary">Accept</span>, you agree to our use of cookies.
+                  By clicking <span className="font-semibold text-secondary">Reject</span>, non-essential cookies will not be used.
+                  Please review our{' '}
+                  <Link href="/privacy-policy" className="text-primary font-semibold hover:underline">
+                    Privacy Policy
+                  </Link>{' '}
+                  and{' '}
+                  <Link href="/cookie-policy" className="text-primary font-semibold hover:underline">
+                    Cookie Policy
+                  </Link>.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 lg:shrink-0">
+                <Button
+                  variant="outline"
+                  onClick={() => handleCookieConsent('rejected')}
+                  className="border-gray-300 hover:bg-gray-50"
+                >
+                  Reject
+                </Button>
+                <Button
+                  onClick={() => handleCookieConsent('accepted')}
+                  className="bg-primary hover:bg-primary/90 text-white"
+                >
+                  Accept
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <PartnerModal open={partnerModalOpen} onOpenChange={setPartnerModalOpen} />
     </div>
   );
