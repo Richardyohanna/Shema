@@ -395,22 +395,25 @@ export default function Home() {
             </p>
           </div>
 
+          
           <div className="flex justify-center items-center -mt-10 mb-15">
-            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 max-w-sm w-full">
-              {/* <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
+            
+            {/* <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 max-w-sm w-full">
+              <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
                   src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/founder.jpeg"
                   alt="Nuhu John Ndavagi - SHEMA Founder"
                   className="w-full h-full object-cover object-[center_40%] group-hover:scale-105 transition-transform duration-500"
                 />
-              </div>  */}
+              </div>  
 
               <div className="p-6 sm:p-8 text-center border-t border-gray-100">
                 <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Nuhu John Ndavagi</h3>
                 <p className="text-primary font-semibold text-sm sm:text-base">Chief Executive Officer</p>
               </div>
-            </div>
-          </div>
+
+            </div>*/}
+          </div> 
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
