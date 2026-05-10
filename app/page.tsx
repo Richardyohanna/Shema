@@ -14,6 +14,7 @@ import {
 import { PartnerModal } from '@/components/partner-modal';
 import { NewsCard } from '@/components/news-card';
 import type { NewsPost } from '@/lib/news';
+import Testimonies from '@/components/testimonies';
 
 type CookieConsent = 'accepted' | 'rejected' | null;
 
@@ -578,7 +579,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 sm:py-24 bg-gray-50 border-t border-gray-200">
+      <section id="testimonies" className="py-16 sm:py-24 bg-white">
+        <Testimonies />
+      </section>
+      <section id="news" className="py-16 sm:py-24 bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <p className="text-foreground/60 font-semibold text-xs uppercase tracking-widest mb-4">Latest Updates</p>
