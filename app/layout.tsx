@@ -10,7 +10,7 @@ const _geistMono = GeistMono;
 
 export const metadata: Metadata = {
   title: 'Shema Humanitarian Services',
-  description: 'SHEMA Humanitarian Services empowers vulnerable communities through skills training, mentorship, and practical support. Join us as a partner or sponsor.',
+  description: 'SHEMA — Strengthening Humanity through Empowerment, Mentorship, and Advocacy — delivers humanitarian assistance, psychosocial support, and economic empowerment to widows, orphans, and IDPs across Northeast Nigeria. Join us as a partner or sponsor.',
   generator: 'v0.app',
   icons: {
     icon: [

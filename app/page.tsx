@@ -204,6 +204,7 @@ export default function Home() {
               <Link href="#about" className="text-foreground hover:text-primary transition">About</Link>
               <Link href="#team" className="text-foreground hover:text-primary transition">Team</Link>
               <Link href="#services" className="text-foreground hover:text-primary transition">Services</Link>
+              <Link href="#partners" className="text-foreground hover:text-primary transition">Partners</Link>
               <Link href="#partnership" className="text-foreground hover:text-primary transition">Partnership</Link>
               <Link href="#contact" className="text-foreground hover:text-primary transition">Contact</Link>
               <Button
@@ -226,6 +227,7 @@ export default function Home() {
               <Link href="#about" className="text-foreground hover:text-primary">About</Link>
               <Link href="#team" className="text-foreground hover:text-primary transition">Team</Link>
               <Link href="#services" className="text-foreground hover:text-primary">Services</Link>
+              <Link href="#partners" className="text-foreground hover:text-primary">Partners</Link>
               <Link href="#partnership" className="text-foreground hover:text-primary">Partnership</Link>
               <Link href="#contact" className="text-foreground hover:text-primary">Contact</Link>
               <Button
@@ -317,9 +319,9 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-secondary mb-4">About SHEMA</h2>
             <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-              SHEMA is a non-governmental organization founded on the principle that every human being deserves care, opportunity, and dignity regardless of race, faith, or background. Our name is an acronym for Strengthening Humanity through Empowerment, Mentorship, and Advocacy, and it defines everything we do.
+              SHEMA — Strengthening Humanity through Empowerment, Mentorship, and Advocacy,  is a humanitarian non-profit and non-political organization committed to transforming the lives of widows, orphans, and marginalized communities across Nigeria and the Lake Chad Basin region.
               <br />
-              we operate with a singular focus: to equip vulnerable groups including widows, orphans, and marginalized communities by providing skills acquisition, knowledge, and support they need to thrive and lead with dignity.
+              Founded on the conviction that every human being deserves dignity, safety, and opportunity, SHEMA operates with both compassion and strategic intent — delivering direct service, skills development, psychosocial support, mentorship, advocacy, and community mobilization across northeast Nigeria.
             </p>
           </div>
 
@@ -327,11 +329,11 @@ export default function Home() {
             <div>
               <h3 className="text-2xl font-bold text-secondary mb-4">Our Mission</h3>
               <p className="text-foreground/80 mb-6 leading-relaxed">
-                To provide compassionate support, empowering individuals and communities to thrive, while fostering a culture of unity, peace, empathy, and love.
+                To deliver compassionate, needs-based humanitarian support that empowers individuals and communities to achieve sustainable wellbeing — while fostering a culture of social cohesion, peace, and dignity.
               </p>
               <h3 className="text-2xl font-bold text-secondary mb-4">Our Vision</h3>
               <p className="text-foreground/80 leading-relaxed">
-                We envision a world where every vulnerable and less privileged individual is empowered with dignity, hope, and opportunity.
+                We envision a world where every vulnerable and less privileged individual is empowered with dignity, hope, and opportunity, where no one is left behind.
               </p>
             </div>
 
@@ -344,15 +346,15 @@ export default function Home() {
                 </div>
                 <div className="flex gap-3">
                   <span className="text-primary font-bold text-lg">WHAT</span>
-                  <p className="text-foreground/80">Empowers lives of vulnerable, widowed, orphaned, and marginalized communities</p>
+                  <p className="text-foreground/80">Provides humanitarian assistance and empowers widows, orphans, IDPs, and marginalized communities</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-primary font-bold text-lg">HOW</span>
-                  <p className="text-foreground/80">Through skills training, knowledge sharing, mentorship, and practical support</p>
+                  <p className="text-foreground/80">Direct service delivery, skills development, psychosocial support, mentorship, advocacy, and community mobilization</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-primary font-bold text-lg">OUTCOME</span>
-                  <p className="text-foreground/80">Individuals thrive, lead, and live with dignity</p>
+                  <p className="text-foreground/80">Individuals and communities attain self-reliance, restored dignity, and sustainable wellbeing</p>
                 </div>
               </div>
             </div>
@@ -398,22 +400,20 @@ export default function Home() {
 
           
           <div className="flex justify-center items-center -mt-10 mb-15">
-            
-            {/* <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 max-w-sm w-full">
+            <div className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 max-w-sm w-full">
               <div className="h-80 sm:h-96 bg-gray-200 overflow-hidden relative">
                 <img
                   src="https://pltuxx4q1i7colum.public.blob.vercel-storage.com/founder.jpeg"
-                  alt="Nuhu John Ndavagi - SHEMA Founder"
+                  alt="Nuhu John Ndavagi - SHEMA Executive Director"
                   className="w-full h-full object-cover object-[center_40%] group-hover:scale-105 transition-transform duration-500"
                 />
-              </div>  
+              </div>
 
               <div className="p-6 sm:p-8 text-center border-t border-gray-100">
                 <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Nuhu John Ndavagi</h3>
-                <p className="text-primary font-semibold text-sm sm:text-base">Chief Executive Officer</p>
+                <p className="text-primary font-semibold text-sm sm:text-base">Executive Director</p>
               </div>
-
-            </div>*/}
+            </div>
           </div> 
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
@@ -427,7 +427,7 @@ export default function Home() {
               </div>
               <div className="p-6 sm:p-8 text-center border-t border-gray-100">
                 <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Roland Jacob</h3>
-                <p className="text-primary font-semibold text-sm sm:text-base">Executive Director</p>
+                <p className="text-primary font-semibold text-sm sm:text-base">Head of Program</p>
               </div>
             </div>
 
@@ -441,7 +441,7 @@ export default function Home() {
               </div>
               <div className="p-6 sm:p-8 text-center border-t border-gray-100">
                 <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">Precious Hosea</h3>
-                <p className="text-primary font-semibold text-sm sm:text-base">Executive Secretary</p>
+                <p className="text-primary font-semibold text-sm sm:text-base">Administrative Officer</p>
               </div>
             </div>
 
@@ -611,6 +611,46 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="partners" className="py-16 sm:py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <p className="text-foreground/60 font-semibold text-xs uppercase tracking-widest mb-4">Collaboration Network</p>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-secondary mb-6 leading-tight">Who We Partner With</h2>
+            <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
+              SHEMA actively seeks and welcomes partnership with institutions that share our commitment to human dignity and sustainable community development. We formalize all institutional partnerships through Memoranda of Understanding (MOUs), with clearly defined roles, responsibilities, and deliverables.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {[
+              { title: 'UN Agencies', desc: 'UNICEF, IOM, UN Women, OCHA, UNHCR, and WFP' },
+              { title: 'International NGOs', desc: 'Humanitarian implementing partners across the region' },
+              { title: 'Government Agencies', desc: 'Federal, state, and local levels across Nigeria' },
+              { title: 'Healthcare Institutions', desc: 'Hospitals, clinics, and medical professionals' },
+              { title: 'Corporate Organizations', desc: 'CSR and social investment frameworks' },
+              { title: 'Academic & Research Institutions', desc: 'Evidence generation and capacity strengthening' },
+              { title: 'Faith Communities', desc: 'Faith-based organizations and networks' },
+              { title: 'International Donors', desc: 'USAID, ECHO, and bilateral government donors' },
+              { title: 'Philanthropists & Diaspora', desc: 'Individual philanthropists and diaspora networks' },
+            ].map((partner, idx) => (
+              <div key={idx} className="bg-white rounded-lg p-6 border border-gray-200 hover:border-primary/50 hover:shadow-md transition">
+                <h3 className="text-lg font-bold text-secondary mb-2">{partner.title}</h3>
+                <p className="text-foreground/70 text-sm">{partner.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="bg-white rounded-xl p-8 sm:p-10 border border-gray-200 text-center">
+            <p className="text-secondary text-xl sm:text-2xl italic font-medium mb-2">
+              "We do not seek funding alone — we seek partners."
+            </p>
+            <p className="text-foreground/60 text-sm">
+              Partners who share our conviction that every human being deserves to live with dignity, safety, and hope.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section id="partnership" className="py-16 sm:py-24 bg-secondary text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6">Partnership Opportunities</h2>
@@ -678,9 +718,28 @@ export default function Home() {
 
               <div className="space-y-8">
                 <div>
+                  <h4 className="font-bold text-secondary mb-2">Office Lines</h4>
+                  <p className="text-primary font-semibold">
+                    <a href="tel:+2347061393560" className="hover:text-secondary transition">0706 139 3560</a>
+                  </p>
+                  <p className="text-primary font-semibold">
+                    <a href="tel:+2347077967897" className="hover:text-secondary transition">0707 796 7897</a>
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-bold text-secondary mb-2">Headquarters</h4>
+                  <p className="text-foreground/80">Maiduguri LGA, Borno State, Northeast Nigeria</p>
+                </div>
+
+                <div>
+                  <h4 className="font-bold text-secondary mb-2">Branch Office</h4>
+                  <p className="text-foreground/80">Ganji Gombi, Gombi LGA, Adamawa State</p>
+                </div>
+
+                <div>
                   <h4 className="font-bold text-secondary mb-2">Communication Officer</h4>
                   <p className="text-foreground/80">Happiness Ishaya Chingplang</p>
-                  <p className="text-primary font-semibold">+234 8169 306 560</p>
                   <ul>
                     <li>
                       <a href="https://web.facebook.com/profile.php?id=61578723781841" className="hover:text-white transition"><img src="/facebookBlack.png" alt="Facebook" className="h-10 w-10 inline-block mr-5 filter grayscale hover:grayscale-10 transition" /></a>
@@ -811,7 +870,8 @@ export default function Home() {
               <h4 className="font-bold mb-4">Contact</h4>
               <ul className="space-y-2 text-sm text-white/70">
                 <li><a href="mailto:shemahumanitarianservices@gmail.com" className="hover:text-white transition">Email: shemahumanitarianservices@gmail.com</a></li>
-                <li><a href="tel:+2349033072314" className="hover:text-white transition">+234 8169 306 560</a></li>
+                <li><a href="tel:+2347061393560" className="hover:text-white transition">0706 139 3560</a></li>
+                <li><a href="tel:+2347077967897" className="hover:text-white transition">0707 796 7897</a></li>
                 <li>Maiduguri, Borno State, Nigeria</li>
                 <li>
                   <a href="https://web.facebook.com/profile.php?id=61578723781841" className="hover:text-white transition"><img src="/facebook.png" alt="Facebook" className="h-5 w-5 inline-block mr-5" /></a>
