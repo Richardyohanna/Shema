@@ -156,12 +156,16 @@ export function getServiceById(id: string) {
   export const servicesData = [
   {
     id: 'trauma-recovery',
-    title: 'Trauma Recovery',
+    title: 'Trauma Recovery & Psychosocial Support',
     shortDescription: 'Counseling, mentorship, and restorative discipleship for healing and recovery',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1001069628.jpg-8cYMLLBTQKctxoncjb3a6MnAcFQxvK.jpeg',
-    description: `Our Trauma Recovery program provides comprehensive psychological and spiritual support to individuals who have experienced loss, displacement, or abuse. We understand that healing is a journey that requires both professional guidance and compassionate mentorship.
+    description: `Structured counseling, case management, and restorative mentorship for survivors of armed conflict, gender-based violence, loss, and displacement. SHEMA collaborates with qualified mental health practitioners to deliver evidence-informed psychosocial interventions aligned with IASC guidelines.`,
 
-Through our trained counselors and mentors, we offer one-on-one sessions, group healing circles, and restorative discipleship programs. Our approach combines evidence-based trauma therapy with spiritual renewal, recognizing that healing encompasses the whole person.`,
+    
+//     Our Trauma Recovery program provides comprehensive psychological and spiritual support to individuals who have experienced loss, displacement, or abuse. We understand that healing is a journey that requires both professional guidance and compassionate mentorship.
+
+// Through our trained counselors and mentors, we offer one-on-one sessions, group healing circles, and restorative discipleship programs. Our approach combines evidence-based trauma therapy with spiritual renewal, recognizing that healing encompasses the whole person.`
+  
     impact: {
       beneficiariesReached: '500+',
       successRate: '78%',
@@ -216,12 +220,14 @@ Ibrahim's transformation demonstrates the profound impact of consistent mentorsh
   },
   {
     id: 'practical-support',
-    title: 'Practical Support',
+    title: 'Humanitarian Assistance & Emergency Response',
     shortDescription: 'Food, shelter, and essential resources for the most vulnerable',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1001117099-WG7Ayg3pLQNe3yd8pktSwxHrfQEcDK.webp',
-    description: `Our Practical Support program directly addresses the immediate survival needs of the most vulnerable in our communities—providing food, shelter, clothing, and essential household items.
+    description: `Timely delivery of life-saving relief — including food assistance, non-food items (NFIs), and emergency support — to crisis-affected households and communities. All distributions are designed to address acute need while safeguarding long-term beneficiary dignity and agency.`,
 
-We believe that meeting basic needs is the foundation for all other development. Our approach goes beyond charity to ensure dignity and respect in all our assistance programs. We work with community leaders to identify the most vulnerable households and provide targeted support.`,
+    //Our Practical Support program directly addresses the immediate survival needs of the most vulnerable in our communities—providing food, shelter, clothing, and essential household items.
+
+//We believe that meeting basic needs is the foundation for all other development. Our approach goes beyond charity to ensure dignity and respect in all our assistance programs. We work with community leaders to identify the most vulnerable households and provide targeted support.`,
     impact: {
       beneficiariesReached: '2000+',
       successRate: '95%',
@@ -259,12 +265,14 @@ More remarkably, Zainab now mentors other widows in her community, sharing the l
   },
   {
     id: 'financial-support',
-    title: 'Financial Support',
+    title: 'Livelihoods & Economic Empowerment',
     shortDescription: 'Grants, scholarships, and economic empowerment initiatives',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1001117168.jpg-ie0qZ4nXD5wy0CTxkT8lmhe9yg0zTK.jpeg',
-    description: `We provide financial support through scholarships, business grants, and microfinance programs designed to break cycles of poverty and create economic opportunities.
+    description: `Provision of vocational skills training, income-generating activity (IGA) support, and entrepreneurship development — enabling individuals to achieve financial independence, reduce economic vulnerability, and break cycles of poverty.`,
+    
+    //We provide financial support through scholarships, business grants, and microfinance programs designed to break cycles of poverty and create economic opportunities.
 
-Our Financial Support program includes educational scholarships for vulnerable children, startup grants for entrepreneurs, and training in financial literacy. We partner with local communities to identify promising individuals and support their journey toward self-sufficiency.`,
+//Our Financial Support program includes educational scholarships for vulnerable children, startup grants for entrepreneurs, and training in financial literacy. We partner with local communities to identify promising individuals and support their journey toward self-sufficiency.`,
     impact: {
       beneficiariesReached: '800+',
       successRate: '85%',
@@ -302,12 +310,14 @@ Maryam's story represents what's possible when talent meets opportunity, when in
   },
   {
     id: 'community-building',
-    title: 'Community Building',
+    title: 'Education, Capacity Development & Civic Engagement',
     shortDescription: 'Education, workshops, seminars, and social engagement programs',
     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1001069486.jpg-fDw9iIkCXVJ96BG1fzl8EPw2v1JZeZ.jpeg',
-    description: `Community Building is at the heart of sustainable development. We organize workshops, seminars, and educational programs that bring communities together and foster collective growth.
+    description: `Community health awareness campaigns, free medical consultations, preventive health services, and referral pathways developed in partnership with hospitals, clinics, and qualified health professionals to extend quality care to underserved and displacement-affected populations.`,
+    
+    //Community Building is at the heart of sustainable development. We organize workshops, seminars, and educational programs that bring communities together and foster collective growth.
 
-Our programs cover diverse topics—from vocational skills training to leadership development, health awareness to environmental conservation. We believe that strong communities are built on shared learning and collective action.`,
+//Our programs cover diverse topics—from vocational skills training to leadership development, health awareness to environmental conservation. We believe that strong communities are built on shared learning and collective action.`,
     impact: {
       beneficiariesReached: '5000+',
       programsRun: '150+',

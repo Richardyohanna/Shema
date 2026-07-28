@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { servicesData } from '@/lib/services-data';
 import { PartnerModal } from '@/components/partner-modal';
 import { NewsCard } from '@/components/news-card';
 import type { NewsPost } from '@/lib/news';
@@ -134,32 +135,32 @@ export default function Home() {
     }
   };
 
-  const servicesData = [
-    {
-      id: 'trauma-recovery',
-      title: 'Trauma Recovery',
-      shortDescription: 'Counseling, mentorship, and restorative discipleship for healing and recovery',
-      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1001069628.jpg-8cYMLLBTQKctxoncjb3a6MnAcFQxvK.jpeg',
-    },
-    {
-      id: 'practical-support',
-      title: 'Practical Support',
-      shortDescription: 'Food, shelter, and essential resources for the most vulnerable',
-      image: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001117122.jpg.jpeg',
-    },
-    {
-      id: 'financial-support',
-      title: 'Financial Support',
-      shortDescription: 'Grants, scholarships, and economic empowerment initiatives',
-      image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3-e46ilDNlN2NWjaVwqBZo0M3gA1oy1k.png',
-    },
-    {
-      id: 'community-building',
-      title: 'Community Building',
-      shortDescription: 'Education, workshops, seminars, and social engagement programs',
-      image: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/kulka%20community.png',
-    },
-  ];
+  // const servicesData = [
+  //   {
+  //     id: 'trauma-recovery',
+  //     title: 'Trauma Recovery',
+  //     shortDescription: 'Counseling, mentorship, and restorative discipleship for healing and recovery',
+  //     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1001069628.jpg-8cYMLLBTQKctxoncjb3a6MnAcFQxvK.jpeg',
+  //   },
+  //   {
+  //     id: 'practical-support',
+  //     title: 'Practical Support',
+  //     shortDescription: 'Food, shelter, and essential resources for the most vulnerable',
+  //     image: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/1001117122.jpg.jpeg',
+  //   },
+  //   {
+  //     id: 'financial-support',
+  //     title: 'Financial Support',
+  //     shortDescription: 'Grants, scholarships, and economic empowerment initiatives',
+  //     image: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3-e46ilDNlN2NWjaVwqBZo0M3gA1oy1k.png',
+  //   },
+  //   {
+  //     id: 'community-building',
+  //     title: 'Community Building',
+  //     shortDescription: 'Education, workshops, seminars, and social engagement programs',
+  //     image: 'https://pltuxx4q1i7colum.public.blob.vercel-storage.com/kulka%20community.png',
+  //   },
+  // ];
 
   const heroSlides = [
     {
@@ -482,12 +483,13 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { icon: Heart, title: 'Compassion', desc: 'Demonstrating empathy and kindness toward those in need' },
-              { icon: Users, title: 'Integrity', desc: 'Transparency, accountability, and honesty in all we do' },
-              { icon: BookOpen, title: 'Social Concern', desc: 'Unconditional care for all who are in need' },
-              { icon: Lightbulb, title: 'Unity', desc: 'Embracing diversity and promoting inclusivity' },
-              { icon: Heart, title: 'Kindness', desc: 'Extending generous and compassionate support' },
-              { icon: Users, title: 'Global Solidarity', desc: 'Partnering to create a united front against inequality' },
+
+              { icon: Heart, title: 'Transparency & Accountability', desc: 'Rigorous financial management, measurable programs outcomes, and open, timely communication — maintained to the highest standards of humanitarian stewardship.' },
+              { icon: Users, title: 'Authentic Grassroots Presence', desc: 'Operating in northeast Nigeria, SHEMA holds direct, trusted relationships with the communities we serve, enabling rapid, contextually appropriate response.' },              
+              { icon: BookOpen, title: 'Mission-Driven Leadership', desc: 'Every member of the SHEMA team is deeply committed to the organization’s humanitarian mandate, bringing authenticity, dedication, and professional integrity.' },
+              { icon: Lightbulb, title: 'Sustainable, Community-Led Outcomes', desc: 'Interventions are designed for lasting impact — building local ownership, strengthening community systems, and empowering individuals rather than fostering aid dependency.' },
+              { icon: Heart, title: 'Rights-Based & Evidence-Informed Methodology', desc: 'All programming is community-centered, gender-sensitive, protection-mainstreamed, and guided by SPHERE and the Core Humanitarian Standard (CHS).' },
+              { icon: Users, title: 'Global Partnership Vision', desc: 'SHEMA actively welcomes partners from across the world — UN agencies, international NGOs, governments, corporations, and individuals who share our commitment to human dignity.' },
             ].map((value, idx) => (
               <div key={idx} className="flex flex-col items-center text-center">
                 <value.icon size={48} className="mb-4 text-primary" />
@@ -528,7 +530,7 @@ export default function Home() {
                       {service.title}
                     </h3>
                     <p className="text-foreground/70 text-sm sm:text-base leading-relaxed">
-                      {service.shortDescription}
+                      {service.description}
                     </p>
                   </div>
                 </div>
@@ -661,28 +663,28 @@ export default function Home() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {[
               {
-                title: 'Mentorship Programs',
+                title: 'Technical Assistance & Mentorship',
                 desc: 'Share your expertise, wisdom, and skills to empower community members',
               },
               {
-                title: 'Community Outreaches',
+                title: 'Community Program Delivery',
                 desc: 'Join us in visiting communities and engaging with the less privileged',
               },
               {
-                title: 'Monetary Donations',
+                title: 'Financial Contributions',
                 desc: 'Provide financial support to sustain and expand our programs',
               },
               {
-                title: 'In-Kind Donations',
+                title: 'In-Kind Contributions',
                 desc: 'Contribute goods, materials, or resources to benefit those in need',
               },
               {
-                title: 'Sponsorship',
+                title: 'Program Sponsorship',
                 desc: 'Partner with us directly to fund and champion our programs',
               },
               {
-                title: 'Prayers & Advocacy',
-                desc: 'Uplift our mission through intercession and raising public awareness',
+                title: 'Joint Programme Design & Implementation',
+                desc: 'Co-design and co-implement evidence-based community interventions, leveraging the comparative strengths of both organizations under a formal partnership agreement.',
               },
             ].map((opp, idx) => (
               <div key={idx} className="bg-white/5 rounded-lg p-6 border border-white/10 hover:border-primary/50 hover:bg-primary/10 transition">
