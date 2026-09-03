@@ -729,10 +729,7 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div>
-                  <h4 className="font-bold text-secondary mb-2">Headquarters</h4>
-                  <p className="text-foreground/80">Maiduguri LGA, Borno State, Northeast Nigeria</p>
-                </div>
+                
 
                 <div>
                   <h4 className="font-bold text-secondary mb-2">Branch Office</h4>
@@ -874,7 +871,7 @@ export default function Home() {
                 <li><a href="mailto:shemahumanitarianservices@gmail.com" className="hover:text-white transition">Email: shemahumanitarianservices@gmail.com</a></li>
                 <li><a href="tel:+2347061393560" className="hover:text-white transition">0706 139 3560</a></li>
                 <li><a href="tel:+2347077967897" className="hover:text-white transition">0707 796 7897</a></li>
-                <li>Maiduguri, Borno State, Nigeria</li>
+                <li>Ganji, Gombi, Gombi LGA Adamawa State.</li>
                 <li>
                   <a href="https://web.facebook.com/profile.php?id=61578723781841" className="hover:text-white transition"><img src="/facebook.png" alt="Facebook" className="h-5 w-5 inline-block mr-5" /></a>
                   <a href="https://www.youtube.com/@shemahumanitarianservice?fbclid=IwY2xjawREUlZleHRuA2FlbQIxMABicmlkETFQRmpqN0lSV3JtYktSb3N1c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHhpHvKEdi8SyimrCS_otogqCFusJ5_eKXBzY-aNHbK24S2QlHl9WrwW2s0O5_aem_SjkeKZT8CEi9IltxpxWLeQ" className="hover:text-white transition"><img src="/youtube.png" alt="YouTube" className="h-5 w-5 inline-block mr-5" /></a>
