@@ -162,7 +162,7 @@ export function PartnerModal({ open, onOpenChange }: PartnerModalProps) {
                     <SelectItem value="monetary">Monetary Donations</SelectItem>
                     <SelectItem value="in-kind">In-Kind Donations</SelectItem>
                     <SelectItem value="sponsorship">Sponsorship</SelectItem>
-                    <SelectItem value="prayer">Prayers & Advocacy</SelectItem>
+                    {/* <SelectItem value="prayer">Prayers & Advocacy</SelectItem> */}
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
