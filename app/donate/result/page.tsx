@@ -104,7 +104,7 @@ function Result() {
         {state.kind === 'done' && state.donation.status === 'success' && (
           <dl className="mt-6 text-sm text-left bg-gray-50 rounded-lg p-4 space-y-2">
             <div className="flex justify-between gap-4"><dt className="text-foreground/60">Donor</dt><dd className="font-medium text-right">{state.donation.donorName}</dd></div>
-            <div className="flex justify-between gap-4"><dt className="text-foreground/60">Amount</dt><dd className="font-medium">₦{state.donation.amount.toLocaleString('en-NG')}</dd></div>
+            <div className="flex justify-between gap-4"><dt className="text-foreground/60">Amount</dt><dd className="font-medium">{new Intl.NumberFormat(state.donation.currency === 'USD' ? 'en-US' : 'en-NG', { style: 'currency', currency: state.donation.currency, minimumFractionDigits: Number.isInteger(state.donation.amount) ? 0 : 2 }).format(state.donation.amount)}</dd></div>
             <div className="flex justify-between gap-4"><dt className="text-foreground/60">Status</dt><dd className="font-medium text-primary">Successful</dd></div>
             <div className="flex justify-between gap-4"><dt className="text-foreground/60">Reference</dt><dd className="font-mono break-all text-right">{state.donation.reference}</dd></div>
           </dl>

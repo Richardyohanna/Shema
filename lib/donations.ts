@@ -3,8 +3,45 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 
 const PAYSTACK_BASE = 'https://api.paystack.co';
 
-export const MIN_DONATION_NGN = 100;
-export const MAX_DONATION_NGN = 10_000_000;
+export type DonationCurrency = 'NGN' | 'USD';
+
+// Limits are in major units (naira / dollars); keep in sync with the donate modal.
+export const CURRENCY_CONFIG: Record<
+  DonationCurrency,
+  { symbol: string; locale: string; min: number; max: number }
+> = {
+  NGN: { symbol: '₦', locale: 'en-NG', min: 100, max: 10_000_000 },
+  USD: { symbol: '$', locale: 'en-US', min: 1, max: 10_000 },
+};
+
+export function parseCurrency(value: unknown): DonationCurrency | null {
+  return value === 'NGN' || value === 'USD' ? value : null;
+}
+
+/**
+ * Converts a human amount (e.g. 25.5) to the currency's subunit (2550) using
+ * string arithmetic, so no floating-point error is introduced. NGN (kobo) and
+ * USD (cents) both have 100 subunits per unit in Paystack. Returns null when the
+ * amount is not a plain positive number with at most 2 decimal places.
+ */
+export function toSubunit(amount: unknown): number | null {
+  const s = typeof amount === 'number' ? String(amount) : typeof amount === 'string' ? amount.trim() : '';
+  const m = /^(\d{1,9})(?:\.(\d{1,2}))?$/.exec(s);
+  if (!m) return null;
+  const subunit = Number(m[1]) * 100 + Number((m[2] ?? '').padEnd(2, '0') || '0');
+  return subunit > 0 ? subunit : null;
+}
+
+export function formatAmount(subunit: number, currency: string): string {
+  const cfg = CURRENCY_CONFIG[currency as DonationCurrency];
+  const value = subunit / 100;
+  return new Intl.NumberFormat(cfg?.locale ?? 'en-US', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
 
 export type DonationStatus = 'pending' | 'success' | 'failed' | 'abandoned';
 
@@ -24,7 +61,15 @@ export interface DonationRow {
 const DONATION_COLUMNS =
   'reference, donor_name, donor_email, amount_kobo, currency, status, paystack_transaction_id, paid_at, verified, thank_you_email_sent';
 
-export class PaystackError extends Error {}
+export class PaystackError extends Error {
+  constructor(
+    message: string,
+    public readonly httpStatus?: number,
+    public readonly paystackMessage?: string
+  ) {
+    super(message);
+  }
+}
 
 function secretKey(): string {
   const key = process.env.PAYSTACK_SECRET_KEY;
@@ -53,9 +98,8 @@ async function paystackFetch(path: string, init?: RequestInit) {
   }
   const json = await res.json().catch(() => null);
   if (!res.ok || !json) {
-    throw new PaystackError(
-      `Paystack responded with ${res.status}: ${(json as any)?.message ?? 'no message'}`
-    );
+    const pm = (json as any)?.message as string | undefined;
+    throw new PaystackError(`Paystack responded with ${res.status}: ${pm ?? 'no message'}`, res.status, pm);
   }
   return json as { status: boolean; message: string; data: any };
 }
@@ -63,6 +107,7 @@ async function paystackFetch(path: string, init?: RequestInit) {
 export async function initializePaystackTransaction(params: {
   email: string;
   amountKobo: number;
+  currency: DonationCurrency;
   reference: string;
   callbackUrl: string;
   name: string;
@@ -72,7 +117,7 @@ export async function initializePaystackTransaction(params: {
     body: JSON.stringify({
       email: params.email,
       amount: params.amountKobo,
-      currency: 'NGN',
+      currency: params.currency,
       reference: params.reference,
       callback_url: params.callbackUrl,
       metadata: {
@@ -206,7 +251,7 @@ export async function sendThankYouEmailOnce(donation: DonationRow): Promise<void
         process.env.NEXT_PUBLIC_SITE_URL ||
         'https://shemahs.org'
       ).replace(/\/+$/, '');
-      const amount = `?${(donation.amount_kobo / 100).toLocaleString('en-NG')}`;
+      const amount = formatAmount(donation.amount_kobo, donation.currency);
       const date = new Date(donation.paid_at ?? Date.now()).toLocaleDateString('en-NG', {
         day: 'numeric',
         month: 'long',

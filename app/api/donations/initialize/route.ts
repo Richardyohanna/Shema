@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import {
-  MAX_DONATION_NGN,
-  MIN_DONATION_NGN,
+  CURRENCY_CONFIG,
   PaystackError,
+  formatAmount,
   initializePaystackTransaction,
+  parseCurrency,
+  toSubunit,
 } from '@/lib/donations';
 
 const EMAIL_RE = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]{2,}$/;
@@ -46,27 +48,32 @@ export async function POST(request: NextRequest) {
   const name = sanitizeName(body?.name);
   const reason = sanitizeReason(body?.reason);
   const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
-  const amount = typeof body?.amount === 'number' ? body.amount : Number(body?.amount);
+  const currency = parseCurrency(body?.currency);
+  const amountKobo = toSubunit(body?.amount);
 
   const errors: Record<string, string> = {};
   if (!name || name.length > 100) errors.name = 'Please enter your full name.';
   if (!email || email.length > 254 || !EMAIL_RE.test(email)) {
     errors.email = 'Please enter a valid email address.';
   }
-  if (
-    !Number.isFinite(amount) ||
-    amount < MIN_DONATION_NGN ||
-    amount > MAX_DONATION_NGN
-  ) {
-    errors.amount = `Enter an amount between ₦${MIN_DONATION_NGN.toLocaleString('en-NG')} and ₦${MAX_DONATION_NGN.toLocaleString('en-NG')}.`;
+  if (!currency) {
+    errors.currency = 'Unsupported currency. Supported currencies are NGN and USD.';
+  } else {
+    const { min, max } = CURRENCY_CONFIG[currency];
+    if (amountKobo === null || amountKobo < min * 100 || amountKobo > max * 100) {
+      errors.amount = `Enter an amount between ${formatAmount(min * 100, currency)} and ${formatAmount(max * 100, currency)}.`;
+    }
   }
   if (reason && reason.length > 500) errors.reason = 'Please keep your message under 500 characters.';
   if (Object.keys(errors).length > 0) {
-    return NextResponse.json({ success: false, message: 'Validation failed.', error: 'Validation failed.', errors }, { status: 400 });
+    const message = errors.currency ?? 'Validation failed.';
+    return NextResponse.json({ success: false, message, error: message, errors }, { status: 400 });
+  }
+  if (!currency || amountKobo === null) {
+    return NextResponse.json({ success: false, message: 'Validation failed.' }, { status: 400 });
   }
 
-  // Naira -> kobo exactly once, here.
-  const amountKobo = Math.round(amount * 100);
+  // Major units -> subunit (kobo / cents) exactly once, via string arithmetic.
   const reference = `SHEMA-${randomUUID()}`;
 
   const fail = (stage: string, error: unknown, status: number) => {
@@ -89,7 +96,7 @@ export async function POST(request: NextRequest) {
     donor_email: email,
     reason,
     amount_kobo: amountKobo,
-    currency: 'NGN',
+    currency,
     status: 'pending',
   });
   if (dbError) return fail('database-insert', dbError, 500);
@@ -98,6 +105,7 @@ export async function POST(request: NextRequest) {
     const authorizationUrl = await initializePaystackTransaction({
       email,
       amountKobo,
+      currency,
       reference,
       callbackUrl,
       name,
@@ -108,10 +116,48 @@ export async function POST(request: NextRequest) {
       .from('donations')
       .update({ status: 'failed', updated_at: new Date().toISOString() })
       .eq('reference', reference);
-    return fail(
-      'paystack-initialize',
-      error,
-      error instanceof PaystackError && error.message.includes('SECRET_KEY') ? 500 : 502
-    );
+
+    // Safe diagnostics only: no keys, no donor details.
+    console.error('Paystack initialization failed:', {
+      currency,
+      amountMajor: body?.amount,
+      amountSentToPaystack: amountKobo,
+      paystackHttpStatus: error instanceof PaystackError ? error.httpStatus : undefined,
+      paystackMessage: error instanceof PaystackError ? error.paystackMessage : undefined,
+      error: error instanceof Error ? error.message : String(error),
+    });
+
+    const respond = (message: string, code: string, status: number) =>
+      NextResponse.json({ success: false, message, error: message, code }, { status });
+
+    if (error instanceof PaystackError) {
+      if (error.message.includes('SECRET_KEY') || error.httpStatus === 401) {
+        return fail('paystack-config', error, 500);
+      }
+      if (/currency not supported/i.test(error.paystackMessage ?? '')) {
+        return respond(
+          `${currency} donations are temporarily unavailable. Please select Naira (NGN), or try again later.`,
+          'CURRENCY_NOT_SUPPORTED',
+          422
+        );
+      }
+      if (error.httpStatus === undefined) {
+        // Network failure / timeout: nothing to do with the currency.
+        return respond(
+          "We couldn't connect to the payment service. Please try again.",
+          'PAYMENT_PROVIDER_UNAVAILABLE',
+          502
+        );
+      }
+      if (error.httpStatus >= 400 && error.httpStatus < 500) {
+        // Raw Paystack text is logged above, never shown to the donor.
+        return respond(
+          'Your donation could not be started. Please check your details and try again.',
+          'PAYMENT_REJECTED',
+          422
+        );
+      }
+    }
+    return fail('paystack-initialize', error, 502);
   }
 }
