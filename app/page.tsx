@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/select';
 import { servicesData } from '@/lib/services-data';
 import { PartnerModal } from '@/components/partner-modal';
+import { DonateModal } from '@/components/donate-modal';
 import { NewsCard } from '@/components/news-card';
 import type { NewsPost } from '@/lib/news';
 import Testimonies from '@/components/testimonies';
@@ -23,6 +24,7 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [partnerModalOpen, setPartnerModalOpen] = useState(false);
+  const [donateModalOpen, setDonateModalOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [cookieConsent, setCookieConsent] = useState<CookieConsent>(null);
   const [isCookieBannerReady, setIsCookieBannerReady] = useState(false);
@@ -209,6 +211,13 @@ export default function Home() {
               <Link href="#partnership" className="text-foreground hover:text-primary transition">Partnership</Link>
               <Link href="#contact" className="text-foreground hover:text-primary transition">Contact</Link>
               <Button
+                variant="outline"
+                className="border-primary text-primary hover:bg-primary"
+                onClick={() => setDonateModalOpen(true)}
+              >
+                Donate
+              </Button>
+              <Button
                 className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 onClick={() => setPartnerModalOpen(true)}
               >
@@ -231,6 +240,16 @@ export default function Home() {
               <Link href="#partners" className="text-foreground hover:text-primary">Partners</Link>
               <Link href="#partnership" className="text-foreground hover:text-primary">Partnership</Link>
               <Link href="#contact" className="text-foreground hover:text-primary">Contact</Link>
+              <Button
+                variant="outline"
+                className="w-full border-primary text-primary hover:bg-primary"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setDonateModalOpen(true);
+                }}
+              >
+                Donate
+              </Button>
               <Button
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                 onClick={() => setPartnerModalOpen(true)}
@@ -958,6 +977,7 @@ export default function Home() {
       )}
 
       <PartnerModal open={partnerModalOpen} onOpenChange={setPartnerModalOpen} />
+      <DonateModal open={donateModalOpen} onOpenChange={setDonateModalOpen} />
     </div>
   );
 }

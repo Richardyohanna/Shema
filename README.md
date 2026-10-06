@@ -217,7 +217,7 @@ Shema Humanitarian Service is dedicated to:
 
 ## 📬 Contact
 
-📧 [info@shemahumanitarianservice.org](mailto:info@shemahumanitarianservice.org)
+📧 [info@shemahs.org](mailto:info@shemahs.org)
 
 ---
 

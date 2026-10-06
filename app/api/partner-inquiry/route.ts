@@ -32,8 +32,8 @@ export async function POST(request: NextRequest) {
     }
 
     await resend.emails.send({
-      from: 'Shema <info@shemahumantarianservice.org>',
-      to: ['shemahumanitarianservices@gmail.com'],
+      from: 'Shema <info@shemahs.org>',
+      to: ['info@shemahs.org'],
       subject: `New Partnership Inquiry from ${name}`,
       replyTo: email,
       html: `
@@ -48,10 +48,10 @@ export async function POST(request: NextRequest) {
     });
 
     await resend.emails.send({
-      from: 'Shema <info@shemahumantarianservice.org>',
+      from: 'Shema <info@shemahs.org>',
       to: [email],
       subject: 'We received your inquiry',
-      replyTo: 'shemahumanitarianservices@gmail.com',
+      replyTo: 'info@shemahs.org',
       html: `
         <p>Hi ${name},</p>
         <p>Thank you for reaching out to Shema Humanitarian.</p>

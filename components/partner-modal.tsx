@@ -187,7 +187,7 @@ export function PartnerModal({ open, onOpenChange }: PartnerModalProps) {
                   type="button"
                   variant="outline"
                   onClick={() => onOpenChange(false)}
-                  className="border-gray-300 hover:bg-gray-50"
+                  className="border-gray-300 hover:bg-primary"
                 >
                   Cancel
                 </Button>
