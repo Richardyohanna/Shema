@@ -266,7 +266,7 @@ export async function sendThankYouEmailOnce(donation: DonationRow): Promise<void
         subject: 'Thank You for Supporting Shema',
         html: `
           <p>Dear ${name},</p>
-          <p>Thank you for your generous donation of <strong>${amount}</strong> to Shema.</p>
+          <p>Thank you for your generous donation of <strong>₦${amount}</strong> to Shema.</p>
           <p>Your support means a great deal to us and helps us continue our work and support the people and communities we serve.</p>
           <p><strong>Donation reference:</strong> ${escapeHtml(donation.reference)}<br/>
           <strong>Date:</strong> ${date}</p>
