@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query;
     if (error) {
       console.error("GET /api/events/admin failed", { operation: "select events for admin", code: error.code, message: error.message });
-      return NextResponse.json({ error: "Unable to load events. Confirm supabase/testimonies.sql was applied." }, { status: 500 });
+      return NextResponse.json({ error: "You have not published any events." }, { status: 500 });
     }
     return NextResponse.json((data ?? []).map(mapEventRow));
   } catch (error) {
