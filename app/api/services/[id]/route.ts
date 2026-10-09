@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { mapServiceRow, mapBeneficiaryRow } from '@/lib/services';
+import { getServiceById } from '@/lib/services-data';
+import { mapTestimonyRow } from '@/lib/testimonies';
+import { mapEventRow } from '@/lib/events';
+import { getServiceFromDatabase } from '@/lib/services-store';
+import { revalidateServiceContent } from '@/lib/revalidate-content';
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -33,33 +38,49 @@ async function uploadFileToSupabase(file: File, folder: string) {
 export async function GET(_: NextRequest, context: RouteContext) {
   try {
     const { id } = await context.params;
+    const service = await getServiceFromDatabase(id);
+    const staticService = getServiceById(id);
+    if (!service) return NextResponse.json({ error: 'Service not found' }, { status: 404 });
 
-    const { data: service, error: serviceError } = await supabaseAdmin
-      .from('services')
-      .select('*')
-      .eq('slug', id)
-      .single();
+    let beneficiaries: Record<string, unknown>[] = [];
+    const [{ data: beneficiaryRows, error: beneficiaryError }, { data: legacyGalleryRows, error: galleryError }] = await Promise.all([
+      supabaseAdmin.from('service_beneficiaries').select('*').eq('service_id', id).order('created_at', { ascending: false }),
+      supabaseAdmin.from('gallery_images').select('*').eq('service_id', id).order('created_at', { ascending: false }),
+    ]);
+    if (beneficiaryError) console.warn('Legacy service beneficiary fallback query failed.', { code: beneficiaryError.code, message: beneficiaryError.message });
+    if (galleryError) console.warn('Legacy service gallery fallback query failed.', { code: galleryError.code, message: galleryError.message });
+    beneficiaries = (beneficiaryRows ?? []) as Record<string, unknown>[];
 
-    if (serviceError || !service) {
-      return NextResponse.json({ error: 'Service not found' }, { status: 404 });
-    }
+    const [{ data: testimonyRows, error: testimonyError }, { data: eventRows, error: eventError }] = await Promise.all([
+      supabaseAdmin.from('testimonies').select('*').eq('service_id', id).eq('published', true).order('display_order', { ascending: true }),
+      supabaseAdmin.from('events').select('*').eq('service_id', id).eq('published', true).order('date', { ascending: false }),
+    ]);
+    if (testimonyError) console.error('GET /api/services/[id] testimony query failed', { code: testimonyError.code, message: testimonyError.message });
+    if (eventError) console.error('GET /api/services/[id] event query failed', { code: eventError.code, message: eventError.message });
 
-    const { data: beneficiaries } = await supabaseAdmin
-      .from('service_beneficiaries')
-      .select('*')
-      .eq('service_id', service.id)
-      .order('created_at', { ascending: false });
-
-    const { data: gallery } = await supabaseAdmin
-      .from('gallery_images')
-      .select('*')
-      .eq('service_id', service.id)
-      .order('created_at', { ascending: false });
+    const staticStories = staticService?.beneficiaryStories.map((story) => ({
+      id: story.id,
+      serviceId: staticService.id,
+      slug: story.id,
+      name: story.name,
+      story: story.story,
+      fullStory: story.fullStory,
+      image: story.image,
+      createdAt: '',
+    })) ?? [];
 
     return NextResponse.json({
-      ...mapServiceRow(service),
-      beneficiaryStories: (beneficiaries || []).map(mapBeneficiaryRow),
-      gallery: (gallery || []).map((item) => item.image_url),
+      ...service,
+      beneficiaryStories: beneficiaries.length
+        ? beneficiaries.map(mapBeneficiaryRow)
+        : staticStories,
+      gallery: service.gallery.length
+        ? service.gallery
+        : (legacyGalleryRows ?? []).map((item) => String(item.image_url || '')).filter(Boolean).length
+          ? (legacyGalleryRows ?? []).map((item) => String(item.image_url || '')).filter(Boolean)
+          : staticService?.gallery ?? [],
+      testimonies: (testimonyRows ?? []).map(mapTestimonyRow).filter(Boolean),
+      events: (eventRows ?? []).map(mapEventRow),
     });
   } catch (error) {
     console.error('GET /api/services/[id] error:', error);
@@ -93,24 +114,48 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       return NextResponse.json({ error: 'Service not found' }, { status: 404 });
     }
 
-    const payload: Record<string, any> = {
+    let impact: unknown;
+    try {
+      impact = JSON.parse(impactRaw);
+    } catch {
+      return NextResponse.json({ error: 'Impact must be valid JSON.' }, { status: 400 });
+    }
+    if (!impact || typeof impact !== 'object' || Array.isArray(impact)) {
+      return NextResponse.json({ error: 'Impact must be a JSON object.' }, { status: 400 });
+    }
+
+    const payload: Record<string, unknown> = {
       title,
       short_description: shortDescription,
       description,
-      impact: JSON.parse(impactRaw),
+      impact,
+      updated_at: new Date().toISOString(),
     };
+
+    const galleryField = formData.get('gallery');
+    if (typeof galleryField === 'string') {
+      try {
+        const gallery: unknown = JSON.parse(galleryField);
+        if (!Array.isArray(gallery) || !gallery.every((item) => typeof item === 'string')) {
+          return NextResponse.json({ error: 'Gallery must be a JSON array of URLs.' }, { status: 400 });
+        }
+        payload.gallery = gallery;
+      } catch {
+        return NextResponse.json({ error: 'Gallery must be valid JSON.' }, { status: 400 });
+      }
+    }
+    const publishedField = formData.get('published');
+    if (publishedField === 'true' || publishedField === 'false') {
+      payload.published = publishedField === 'true';
+    }
 
     if (imageFile && imageFile.size > 0) {
       const imageUrl = await uploadFileToSupabase(imageFile, 'services');
-      payload.image = imageUrl;
-
-      await supabaseAdmin.from('gallery_images').insert({
-        image_url: imageUrl,
-        alt_text: title || existing.title,
-        source_type: 'service',
-        source_id: existing.id,
-        service_id: existing.id,
-      });
+      payload.image_url = imageUrl;
+      const existingGallery = Array.isArray(existing.gallery)
+        ? existing.gallery.filter((url: unknown): url is string => typeof url === 'string')
+        : [];
+      if (!('gallery' in payload)) payload.gallery = [imageUrl, ...existingGallery];
     }
 
     const { data, error } = await supabaseAdmin
@@ -124,6 +169,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       return NextResponse.json({ error: 'Failed to update service' }, { status: 500 });
     }
 
+    revalidateServiceContent(id);
     return NextResponse.json(mapServiceRow(data));
   } catch (error) {
     console.error('PUT /api/services/[id] error:', error);
@@ -141,10 +187,18 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await supabaseAdmin
+    const { error: galleryDeleteError } = await supabaseAdmin
       .from('gallery_images')
       .delete()
       .eq('service_id', id);
+    if (galleryDeleteError && galleryDeleteError.code !== '42P01' && galleryDeleteError.code !== 'PGRST205') {
+      console.error('DELETE /api/services/[id] gallery cleanup failed', {
+        operation: 'delete legacy service gallery rows',
+        code: galleryDeleteError.code,
+        message: galleryDeleteError.message,
+      });
+      return NextResponse.json({ error: 'Unable to delete service gallery records.' }, { status: 500 });
+    }
 
     const { error } = await supabaseAdmin
       .from('services')
@@ -155,6 +209,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    revalidateServiceContent(id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('DELETE /api/services/[id] error:', error);

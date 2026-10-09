@@ -5,6 +5,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
+import type { Testimony } from '@/lib/testimonies';
+import type { EventRecord } from '@/lib/events';
+import { getYouTubeId, getYouTubeStartSeconds } from '@/lib/youtube';
+import { YouTubeEmbed } from '@/components/youtube-embed';
 
 interface BeneficiaryStory {
   id: string;
@@ -29,6 +33,12 @@ interface ServiceItem {
   updatedAt?: string;
   beneficiaryStories?: BeneficiaryStory[];
   gallery?: string[];
+  testimonies?: Testimony[];
+  events?: EventRecord[];
+}
+
+function isDirectVideo(value: string | undefined): value is string {
+  return Boolean(value && /^https?:\/\//i.test(value) && /\.(mp4|mov|webm|ogg|m4v)(?:[?#].*)?$/i.test(value));
 }
 
 function ServicePageSkeleton() {
@@ -80,6 +90,7 @@ export default function ServicePage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [expandedStoryId, setExpandedStoryId] = useState<string | number | null>(null);
 
   useEffect(() => {
     const loadService = async () => {
@@ -241,7 +252,52 @@ export default function ServicePage() {
             Stories of Impact
           </h2>
 
-          {!service.beneficiaryStories || service.beneficiaryStories.length === 0 ? (
+          {service.testimonies && service.testimonies.length > 0 ? (
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              {service.testimonies.map((story) => {
+                const videoId = story.videoId || (story.videoUrl ? getYouTubeId(story.videoUrl) : null);
+                const fullStory = story.fullStory || "";
+                return (
+                  <article key={story.id} className="overflow-hidden rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 shadow-md">
+                    {videoId && story.videoUrl ? (
+                      <YouTubeEmbed
+                        videoId={videoId}
+                        title={story.title}
+                        startSeconds={getYouTubeStartSeconds(story.videoUrl)}
+                        videoUrl={story.videoUrl}
+                      />
+                    ) : isDirectVideo(story.videoUrl) ? (
+                      <video src={story.videoUrl} controls preload="metadata" className="aspect-video w-full bg-black" />
+                    ) : story.imageUrl ? (
+                      <img src={story.imageUrl} alt={story.name} className="h-64 w-full object-cover object-top" />
+                    ) : (
+                      <div className="flex h-40 items-center justify-center bg-gray-100 text-sm text-gray-500">Story image not available</div>
+                    )}
+                    <div className="p-6 sm:p-8">
+                      <p className="mb-2 text-sm font-medium text-primary">{story.role}</p>
+                      <h3 className="mb-3 text-2xl font-bold text-secondary">{story.title}</h3>
+                      <p className="mb-5 text-foreground/80 leading-relaxed">{story.summary || story.description}</p>
+                      {fullStory && (
+                        <>
+                          {expandedStoryId === story.id && (
+                            <p className="mb-5 whitespace-pre-line text-foreground/80 leading-relaxed">{fullStory}</p>
+                          )}
+                          <button
+                            type="button"
+                            aria-expanded={expandedStoryId === story.id}
+                            onClick={() => setExpandedStoryId(expandedStoryId === story.id ? null : story.id)}
+                            className="font-semibold text-primary hover:underline"
+                          >
+                            {expandedStoryId === story.id ? "Show less" : "Read full story"}
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : !service.beneficiaryStories || service.beneficiaryStories.length === 0 ? (
             <div className="text-center py-12 border border-dashed border-gray-300 rounded-xl">
               <p className="text-foreground/70 text-lg">
                 No beneficiary stories available yet.
@@ -277,6 +333,61 @@ export default function ServicePage() {
                   </div>
                 </Link>
               ))}
+            </div>
+          )}
+        </section>
+
+        <section className="mb-16" id="events">
+          <h2 className="text-3xl sm:text-4xl font-bold text-secondary mb-12">Events</h2>
+          {!service.events?.length ? (
+            <div className="text-center py-12 border border-dashed border-gray-300 rounded-xl">
+              <p className="text-foreground/70 text-lg">No published events for this service yet.</p>
+            </div>
+          ) : (
+            <div className="space-y-8">
+              {service.events.map((event) => {
+                const linkedTestimonies = service.testimonies?.filter((story) => story.eventId === event.id) ?? [];
+                const galleryImages = [event.coverImageUrl, ...event.gallery].filter((image): image is string => Boolean(image));
+                return (
+                  <article key={event.id} className="rounded-xl border border-gray-200 bg-gray-50 p-6 sm:p-8">
+                    <div className="flex flex-col gap-6 md:flex-row">
+                      {event.coverImageUrl && <img src={event.coverImageUrl} alt={event.title} className="h-56 w-full rounded-lg object-cover md:w-1/3" />}
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-primary">{event.date}{event.location ? ` · ${event.location}` : ""}</p>
+                        <h3 className="mt-2 text-2xl font-bold text-secondary">{event.title}</h3>
+                        {event.description && <p className="mt-3 whitespace-pre-line text-foreground/80">{event.description}</p>}
+                      </div>
+                    </div>
+                    {galleryImages.length > 0 && (
+                      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                        {galleryImages.map((image, index) => (
+                          <img key={`${event.id}-gallery-${index}`} src={image} alt={`${event.title} gallery ${index + 1}`} className="h-36 w-full rounded-lg object-cover" />
+                        ))}
+                      </div>
+                    )}
+                    <div className="mt-6">
+                      <h4 className="mb-4 text-lg font-semibold text-secondary">Event testimonies</h4>
+                      {linkedTestimonies.length ? (
+                        <div className="grid gap-5 md:grid-cols-2">
+                          {linkedTestimonies.map((story) => {
+                            const videoId = story.videoId || (story.videoUrl ? getYouTubeId(story.videoUrl) : null);
+                            return (
+                              <div key={story.id} className="rounded-lg bg-white p-4">
+                                {videoId && story.videoUrl && <YouTubeEmbed videoId={videoId} title={story.title} startSeconds={getYouTubeStartSeconds(story.videoUrl)} videoUrl={story.videoUrl} />}
+                                <h5 className="mt-3 font-semibold text-secondary">{story.title}</h5>
+                                <p className="text-sm text-foreground/70">{story.name} · {story.role}</p>
+                                <p className="mt-2 text-sm text-foreground/80">{story.summary || story.description}</p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-foreground/70">No testimonies are linked to this event yet.</p>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           )}
         </section>

@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { servicesData } from '@/lib/services-data';
+import { mapImpactRecord, type ServiceItem } from '@/lib/services';
 import { PartnerModal } from '@/components/partner-modal';
 import { DonateModal } from '@/components/donate-modal';
 import { NewsCard } from '@/components/news-card';
@@ -40,6 +41,21 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [latestNews, setLatestNews] = useState<NewsPost[]>([]);
+  const [services, setServices] = useState<ServiceItem[]>(() =>
+    servicesData.map((service, sortOrder) => ({
+      id: service.id,
+      slug: service.id,
+      title: service.title,
+      shortDescription: service.shortDescription,
+      description: service.description,
+      image: service.image,
+      impact: mapImpactRecord(service.impact),
+      gallery: service.gallery,
+      sortOrder,
+      published: true,
+      createdAt: '',
+    }))
+  );
 
   useEffect(() => {
     const savedConsent = localStorage.getItem('shema_cookie_consent') as CookieConsent;
@@ -49,6 +65,23 @@ export default function Home() {
       setCookieConsent(null);
     }
     setIsCookieBannerReady(true);
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadServices() {
+      try {
+        const response = await fetch('/api/services', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Unable to load current services.');
+        const data: unknown = await response.json();
+        if (!Array.isArray(data)) throw new Error('The services response was invalid.');
+        if (mounted && data.length) setServices(data as ServiceItem[]);
+      } catch (error) {
+        console.error('Home page service data request failed; retaining static service fallback.', error);
+      }
+    }
+    void loadServices();
+    return () => { mounted = false; };
   }, []);
 
   const handleCookieConsent = (choice: Exclude<CookieConsent, null>) => {
@@ -533,7 +566,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-            {servicesData.map((service) => (
+            {services.map((service) => (
               <Link key={service.id} href={`/services/${service.id}`}>
                 <div className="group overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 bg-white cursor-pointer h-full">
                   <div className="relative h-64 sm:h-72 overflow-hidden bg-gray-200">
