@@ -21,9 +21,12 @@ import {
 } from '@/components/ui/dialog';
 import { Lock, Edit, Trash2, Plus, LogOut } from 'lucide-react';
 import type { NewsPost } from '@/lib/news';
+import AdminTestimonies from '@/components/admin-testimonies';
+import AdminEvents from '@/components/admin-events';
 
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
+  const [activeSection, setActiveSection] = useState<'news' | 'testimonies' | 'events'>('news');
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
@@ -267,21 +270,25 @@ export default function AdminPage() {
             <h1 className="text-2xl sm:text-3xl font-bold text-secondary">
               Admin Dashboard
             </h1>
-            <p className="text-foreground/70 text-sm mt-1">Manage news</p>
+            <p className="text-foreground/70 text-sm mt-1">
+              {activeSection === 'news' ? 'Manage news' : activeSection === 'events' ? 'Manage events' : 'Manage video testimonies'}
+            </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <Button
-              onClick={() => {
-                resetForm();
-                setIsFormOpen(true);
-              }}
-              disabled={creating || loggingIn || loadingNews}
-              className="bg-primary hover:bg-primary/90 text-white gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              <Plus size={20} />
-              {creating ? 'Please Wait...' : 'New Post'}
-            </Button>
+            {activeSection === 'news' && (
+              <Button
+                onClick={() => {
+                  resetForm();
+                  setIsFormOpen(true);
+                }}
+                disabled={creating || loggingIn || loadingNews}
+                className="bg-primary hover:bg-primary/90 text-white gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <Plus size={20} />
+                {creating ? 'Please Wait...' : 'New Post'}
+              </Button>
+            )}
 
             <Button
               onClick={() => {
@@ -300,6 +307,39 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <nav aria-label="Admin sections" className="mb-8 flex flex-wrap gap-2 border-b border-gray-200 pb-3">
+          <Button
+            type="button"
+            variant={activeSection === 'news' ? 'default' : 'outline'}
+            onClick={() => setActiveSection('news')}
+            className={activeSection === 'news' ? 'bg-secondary text-white' : ''}
+          >
+            News Management
+          </Button>
+          <Button
+            type="button"
+            variant={activeSection === 'testimonies' ? 'default' : 'outline'}
+            onClick={() => setActiveSection('testimonies')}
+            className={activeSection === 'testimonies' ? 'bg-secondary text-white' : ''}
+          >
+            Video Testimonies
+          </Button>
+          <Button
+            type="button"
+            variant={activeSection === 'events' ? 'default' : 'outline'}
+            onClick={() => setActiveSection('events')}
+            className={activeSection === 'events' ? 'bg-secondary text-white' : ''}
+          >
+            Events
+          </Button>
+        </nav>
+
+        {activeSection === 'testimonies' ? (
+          <AdminTestimonies password={password} />
+        ) : activeSection === 'events' ? (
+          <AdminEvents password={password} />
+        ) : (
+          <>
         {loadingNews ? (
           <div className="text-center py-20">
             <p className="text-foreground/70 text-lg">Loading posts...</p>
@@ -367,6 +407,8 @@ export default function AdminPage() {
               </div>
             ))}
           </div>
+        )}
+          </>
         )}
       </div>
 
