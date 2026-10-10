@@ -920,7 +920,7 @@ export default function Home() {
             <div>
               <h4 className="font-bold mb-4">Contact</h4>
               <ul className="space-y-2 text-sm text-white/70">
-                <li><a href="mailto:shemahumanitarianservices@gmail.com" className="hover:text-white transition">Email: shemahumanitarianservices@gmail.com</a></li>
+                <li><a href="mailto:info@shemahs.org" className="hover:text-white transition">Email: info@shemahs.org</a></li>
                 <li><a href="tel:+2347061393560" className="hover:text-white transition">0706 139 3560</a></li>
                 <li><a href="tel:+2347077967897" className="hover:text-white transition">0707 796 7897</a></li>
                 <li>Ganji, Gombi, Gombi LGA Adamawa State.</li>
